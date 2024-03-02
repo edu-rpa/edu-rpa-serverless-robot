@@ -68,3 +68,27 @@ def get_robot_detail(event, context):
         return success_response(robot_response["Item"])
     else:
         return success_response({"state": "not running"})
+    
+def update_robot_state(event, context):
+    print(f'Event: {json_prettier(event)}')
+    robot_table = get_robot_table()
+
+    instance_id = event["detail"]["instance-id"]
+    state = event["detail"]["state"]
+    instance_name = get_instance_name(instance_id)
+
+    if instance_name == None or instance_name.split(".")[0] != "edu-rpa-robot":
+        return success_response({})
+    [user_id, process_id, version] = instance_name.split(".")[1].split("_")
+
+    try:
+        if state != "terminated":
+            robot_table.update_item(
+                Key = {"userId": user_id, "processIdVersion": f'{process_id}.{version}'},
+                UpdateExpression = "set state = :s",
+                ExpressionAttributeValues = {":s": state}
+            )
+        else:
+            robot_table.delete_item(Key = {"userId": user_id, "processIdVersion": f'{process_id}.{version}'})
+    except Exception as e:
+        return error_response(400, "Cannot Update Robot Detail", str(e))

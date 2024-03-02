@@ -3,8 +3,9 @@ import os
 
 ec2_client = boto3.client('ec2')
 
-def launch_ec2(robot_file, ami_id='ami-0d2e7d399f8a888b9'):
-    robot_folder = os.path.dirname(robot_file)
+def launch_ec2(user_id, process_id, version, ami_id='ami-0d2e7d399f8a888b9'):
+    robot_code_file = f'robot/{user_id}/{process_id}/{version}/robot_code.json'
+    robot_folder = os.path.dirname(robot_code_file)
     user_data = f'''#!/bin/bash
     sudo yum install pip -y
     mkdir /home/ec2-user/robot && sudo chmod -R 777 /home/ec2-user/robot
@@ -18,7 +19,7 @@ def launch_ec2(robot_file, ami_id='ami-0d2e7d399f8a888b9'):
     && conda activate robotenv \\
     && conda install -y boto3 packaging \\
     && aws s3 cp s3://robot/utils/setup.py ./ \\
-    && export ROBOT_FILE={robot_file} \\
+    && export ROBOT_FILE={robot_code_file} \\
     && sudo chmod -R 777 /home/ec2-user/robot \\
     && python3 setup.py >> app.log\\
     && aws s3 cp ./app.log s3://{robot_folder}/run/ \\
@@ -50,6 +51,17 @@ def launch_ec2(robot_file, ami_id='ami-0d2e7d399f8a888b9'):
                 },
             }
         ],
+        "TagSpecifications": [
+            {
+                "ResourceType": "instance",
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": f'edu-rpa-robot.{user_id}_{process_id}_{version}'
+                    },
+                ]
+            }
+        ]
     }
     # Launch the instance
     response = ec2_client.run_instances(**instance_params)

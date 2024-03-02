@@ -36,21 +36,20 @@ def success_response(body):
         'body': json.dumps(body)
     }
 
-def handle_launch_instance(userId, processId, version):
+def handle_launch_instance(user_id, process_id, version):
     robot_table = get_robot_table()
-    robot_code_file = f'robot/{userId}/{processId}/{version}/robot.json'
 
     try:
-        instance_response = launch_ec2(robot_code_file)
+        instance_response = launch_ec2(user_id, process_id, version)
     except Exception as e:
         return error_response(400, "Cannot Launch Robot Instance", str(e))
     
     instance_id = instance_response["InstanceId"]
     launch_time = instance_response["LaunchTime"]
     state = instance_response["State"]["Name"]
-    process_id_version = f'{processId}.{version}'
+    process_id_version = f'{process_id}.{version}'
     robot_detail = {
-        "userId": userId,
+        "userId": user_id,
         "processIdVersion": process_id_version,
         "launchTime": str(launch_time),
         "instanceId": instance_id,
@@ -65,43 +64,24 @@ def handle_launch_instance(userId, processId, version):
     return success_response(robot_detail)
 
 def handle_start_robot_instance(user_id, process_id, version, instance_id):
-    robot_table = get_robot_table()
-
     try:
         instance_response = start_ec2_robot(instance_id)
     except Exception as e:
         return error_response(400, "Cannot Start Robot Instance", str(e))
     
     current_state = instance_response["CurrentState"]["Name"]
-
-    try:
-        robot_table.update_item(
-            Key = {"userId": user_id, "processIdVersion": f'{process_id}.{version}'},
-            UpdateExpression = "set state = :s",
-            ExpressionAttributeValues = {":s": current_state}
-        )
-    except Exception as e:
-        return error_response(400, "Cannot Update Robot Detail", str(e))
-    
     return success_response({"state": current_state})
 
 def handle_stop_robot_instance(user_id, process_id, version, instance_id):
-    robot_table = get_robot_table()
-
     try:
         instance_response = stop_ec2_robot(instance_id)
     except Exception as e:
         return error_response(400, "Cannot Stop Robot Instance", str(e))
     
     current_state = instance_response["CurrentState"]["Name"]
-
-    try:
-        robot_table.update_item(
-            Key = {"userId": user_id, "processIdVersion": f'{process_id}.{version}'},
-            UpdateExpression = "set state = :s",
-            ExpressionAttributeValues = {":s": current_state}
-        )
-    except Exception as e:
-        return error_response(400, "Cannot Update Robot Detail", str(e))
-    
     return success_response({"state": current_state})
+
+def get_instance_name(instance_id):
+    ec2 = boto3.client('ec2')
+    response = ec2.describe_instances(InstanceIds=[instance_id])
+    return response["Reservations"][0]["Instances"][0]["Tags"][0]["Value"]
