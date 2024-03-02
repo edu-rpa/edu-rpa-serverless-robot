@@ -1,0 +1,8 @@
+POST http://127.0.0.1:3000/robot/run
+Content-Type: application/json
+
+{
+    "user_id": 10,
+    "process_id": "aaaaaa",
+    "version": 1
+}
