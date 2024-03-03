@@ -150,6 +150,51 @@ Resources:
               Id: UpdateRobotStateFunction
             RuleName: EC2-robot-instance-updates-state
 
+  CreateScheduleFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Zip
+      CodeUri: src/schedule/
+      Handler: app.create_schedule
+      Runtime: python3.9
+      Events:
+        HttpPost:
+          Type: HttpApi
+          Properties:
+            Path: /schedule
+            Method: POST
+            ApiId: !Ref RobotHttpApi
+
+  DeleteScheduleFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Zip
+      CodeUri: src/schedule/
+      Handler: app.delete_schedule
+      Runtime: python3.9
+      Events:
+        HttpPost:
+          Type: HttpApi
+          Properties:
+            Path: /schedule/delete
+            Method: POST
+            ApiId: !Ref RobotHttpApi
+
+  GetScheduleFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Zip
+      CodeUri: src/schedule/
+      Handler: app.get_schedule
+      Runtime: python3.9
+      Events:
+        HttpGet:
+          Type: HttpApi
+          Properties:
+            Path: /schedule
+            Method: GET
+            ApiId: !Ref RobotHttpApi
+
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
   # Find out more about other implicit resources you can reference within SAM

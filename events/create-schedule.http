@@ -1,0 +1,11 @@
+POST http://127.0.0.1:3000/schedule
+Content-Type: application/json
+
+{
+    "user_id": 10,
+    "process_id": "aaaaaa",
+    "version": 1,
+    "schedule": "cron(0 1 * * ? *)",
+    "start_date": "",
+    "end_date": ""
+}
