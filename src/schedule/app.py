@@ -10,9 +10,7 @@ def create_schedule(event, context):
     user_id = body['user_id']
     process_id = body['process_id']
     version = body['version']
-    schedule = body['schedule']
-    start_date = body['start_date']
-    end_date = body['end_date']
+    create_schedule_dto = body['create_schedule_dto']
 
     schedule_name = f'edu-rpa-robot-schedule.{user_id}_{process_id}_{version}'
 
@@ -20,7 +18,7 @@ def create_schedule(event, context):
         schedule_response = scheduler.get_schedule(Name = schedule_name)
         return error_response(400, "Schedule Already Exists", "Cannot Create Existing Schedule")
     except scheduler.exceptions.ResourceNotFoundException:
-        return handle_create_schedule(user_id, process_id, version, schedule, start_date, end_date)
+        return handle_create_schedule(user_id, process_id, version, create_schedule_dto)
     
 def delete_schedule(event, context):
     print(f'Event: {json_prettier(event)}')
@@ -43,7 +41,7 @@ def get_schedule(event, context):
     print(f'Event: {json_prettier(event)}')
     scheduler = boto3.client('scheduler')
     
-    query  = json.loads(event['queryStringParameters'])
+    query  = event['queryStringParameters']
     user_id = query['user_id']
     process_id = query['process_id']
     version = query['version']

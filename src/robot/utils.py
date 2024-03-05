@@ -29,13 +29,13 @@ def error_response(statusCode, error, message):
         'body': json.dumps({
             'error': error,
             'message': message,
-        })
+        }, default=str)
     }
 
 def success_response(body):
     return {
         'statusCode': 200,
-        'body': json.dumps(body)
+        'body': json.dumps(body, default=str)
     }
 
 def handle_launch_instance(user_id, process_id, version):

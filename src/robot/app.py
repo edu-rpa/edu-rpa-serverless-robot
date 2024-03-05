@@ -6,7 +6,10 @@ def run_robot(event, context):
     print(f'Event: {json_prettier(event)}')
     robot_table = get_robot_table()
 
-    body  = json.loads(event['body'])
+    if type(event['body']) == str:
+        body  = json.loads(event['body'])
+    else:
+        body = event['body']
 
     user_id = body['user_id']
     process_id = body['process_id']

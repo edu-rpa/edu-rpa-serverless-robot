@@ -180,6 +180,17 @@ Resources:
       CodeUri: src/schedule/
       Handler: app.create_schedule
       Runtime: python3.9
+      Policies:
+        - Statement:
+          - Effect: Allow
+            Action: 
+              - 'scheduler:GetSchedule'
+              - 'scheduler:CreateSchedule'
+            Resource: '*'
+          - Effect: Allow
+            Action:
+              - 'iam:PassRole'
+            Resource: 'arn:aws:iam::678601387840:role/Robot_Scheduler_Role'
       Events:
         HttpPost:
           Type: HttpApi
@@ -195,6 +206,12 @@ Resources:
       CodeUri: src/schedule/
       Handler: app.delete_schedule
       Runtime: python3.9
+      Policies:
+        - Statement:
+          - Effect: Allow
+            Action: 
+              - 'scheduler:DeleteSchedule'
+            Resource: '*'
       Events:
         HttpPost:
           Type: HttpApi
@@ -210,6 +227,12 @@ Resources:
       CodeUri: src/schedule/
       Handler: app.get_schedule
       Runtime: python3.9
+      Policies:
+        - Statement:
+          - Effect: Allow
+            Action:
+              - 'scheduler:GetSchedule'
+            Resource: '*'
       Events:
         HttpGet:
           Type: HttpApi

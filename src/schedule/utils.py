@@ -12,16 +12,16 @@ def error_response(statusCode, error, message):
         'body': json.dumps({
             'error': error,
             'message': message,
-        })
+        }, default=str)
     }
 
 def success_response(body):
     return {
         'statusCode': 200,
-        'body': json.dumps(body)
+        'body': json.dumps(body, default=str)
     }
 
-def handle_create_schedule(user_id, process_id, version, schedule, start_date = None, end_date = None):
+def handle_create_schedule(user_id, process_id, version, create_schedule_dto):
     scheduler = boto3.client('scheduler')
     schedule_name = f'edu-rpa-robot-schedule.{user_id}_{process_id}_{version}'
 
@@ -31,7 +31,7 @@ def handle_create_schedule(user_id, process_id, version, schedule, start_date = 
             'Mode': 'OFF'
         },
         'Target': {
-            'Arn': 'arn:aws:lambda:ap-southeast-2:678601387840:function:edu-rpa-serverless-robot-RunRobotFunction-lic2tksnLJil',
+            'Arn': 'arn:aws:lambda:ap-southeast-1:678601387840:function:edu-rpa-serverless-robot-RunRobotFunction-8sVtvmT4CL62',
             'RoleArn': 'arn:aws:iam::678601387840:role/Robot_Scheduler_Role',
             'Input': json.dumps({
                 "body": {
@@ -41,15 +41,19 @@ def handle_create_schedule(user_id, process_id, version, schedule, start_date = 
                 }
             })
         },
-        'ScheduleExpression': schedule,
+        'ScheduleExpression': create_schedule_dto['schedule_expression'],
+        'ScheduleExpressionTimezone': 'UTC+07:00',
         'State': 'ENABLED',
     }
 
-    if start_date:
-        create_params['StartDate'] = start_date
+    if 'schedule_expression_timezone' in create_schedule_dto:
+        create_params['ScheduleExpressionTimezone'] = create_schedule_dto['schedule_expression_timezone']
 
-    if end_date:
-        create_params['EndDate'] = end_date
+    if 'start_date' in create_schedule_dto:
+        create_params['StartDate'] = create_schedule_dto['start_date']
+
+    if 'end_date' in create_schedule_dto:
+        create_params['EndDate'] = create_schedule_dto['end_date']
 
     try:
         response = scheduler.create_schedule(**create_params)
