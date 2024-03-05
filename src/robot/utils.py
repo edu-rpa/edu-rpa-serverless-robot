@@ -7,7 +7,9 @@ def ddb_deserialize(r, type_deserializer = TypeDeserializer()):
     return type_deserializer.deserialize({"M": r})
 
 def json_prettier(jsonData) :
-    return json.dumps(jsonData, indent=4, sort_keys=True, default=str)
+    # NOTE: disable json prettify for CloudWatch logs
+    # return json.dumps(jsonData, indent=4, sort_keys=True, default=str)
+    return jsonData
 
 def get_robot_table():
     dynamodb = boto3.resource("dynamodb")
@@ -53,7 +55,7 @@ def handle_launch_instance(user_id, process_id, version):
         "processIdVersion": process_id_version,
         "launchTime": str(launch_time),
         "instanceId": instance_id,
-        "state": state,
+        "instanceState": state,
     }
 
     try:

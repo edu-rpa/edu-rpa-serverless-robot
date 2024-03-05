@@ -2,7 +2,9 @@ import json
 import boto3
 
 def json_prettier(jsonData) :
-    return json.dumps(jsonData, indent=4, sort_keys=True, default=str)
+    # NOTE: disable json prettify for CloudWatch logs
+    # return json.dumps(jsonData, indent=4, sort_keys=True, default=str)
+    return jsonData
 
 def error_response(statusCode, error, message):
     return {
