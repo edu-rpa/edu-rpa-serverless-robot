@@ -253,8 +253,13 @@ Resources:
         - Statement:
           - Effect: Allow
             Action: 
+              - 'scheduler:GetSchedule'
               - 'scheduler:UpdateSchedule'
             Resource: '*'
+          - Effect: Allow
+            Action:
+              - 'iam:PassRole'
+            Resource: 'arn:aws:iam::678601387840:role/Robot_Scheduler_Role'
       Events:
         HttpPut:
           Type: HttpApi

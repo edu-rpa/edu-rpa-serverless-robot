@@ -61,7 +61,7 @@ def handle_create_schedule(user_id, process_id, version, create_schedule_dto):
     except Exception as e:
         return error_response(400, "Cannot Create Schedule", str(e))
     
-def handle_update_schedule(user_id, process_id, version, update_schedule_dto):
+def handle_update_schedule(user_id, process_id, version, update_schedule_dto, old_schedule):
     scheduler = boto3.client('scheduler')
     schedule_name = f'edu-rpa-robot-schedule.{user_id}.{process_id}.{version}'
 
@@ -70,6 +70,8 @@ def handle_update_schedule(user_id, process_id, version, update_schedule_dto):
         'ScheduleExpression': update_schedule_dto['schedule_expression'],
         'ScheduleExpressionTimezone': 'UTC+07:00',
         'State': 'ENABLED',
+        'FlexibleTimeWindow': old_schedule['FlexibleTimeWindow'],
+        'Target': old_schedule['Target'],
     }
 
     if 'schedule_expression_timezone' in update_schedule_dto:

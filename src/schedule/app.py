@@ -70,7 +70,7 @@ def update_schedule(event, context):
 
     try:
         schedule_response = scheduler.get_schedule(Name = schedule_name)
-        return handle_update_schedule(user_id, process_id, version, update_schedule_dto)
+        return handle_update_schedule(user_id, process_id, version, update_schedule_dto, schedule_response)
     except scheduler.exceptions.ResourceNotFoundException:
         return error_response(400, "Schedule Not Found", "Cannot Update Non-Existing Schedule")
     
