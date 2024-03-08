@@ -79,6 +79,7 @@ Resources:
           - Effect: Allow
             Action: 
               - 'ec2:RunInstances'
+              - 'ec2:StartInstances'
               - 'ec2:CreateTags'
             Resource: '*'
       Events:
@@ -239,6 +240,32 @@ Resources:
           Properties:
             Path: /schedule
             Method: GET
+            ApiId: !Ref RobotHttpApi
+
+  UpdateScheduleFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Zip
+      CodeUri: src/schedule/
+      Handler: app.update_schedule
+      Runtime: python3.9
+      Policies:
+        - Statement:
+          - Effect: Allow
+            Action: 
+              - 'scheduler:GetSchedule'
+              - 'scheduler:UpdateSchedule'
+            Resource: '*'
+          - Effect: Allow
+            Action:
+              - 'iam:PassRole'
+            Resource: 'arn:aws:iam::678601387840:role/Robot_Scheduler_Role'
+      Events:
+        HttpPut:
+          Type: HttpApi
+          Properties:
+            Path: /schedule
+            Method: PUT
             ApiId: !Ref RobotHttpApi
 
 Outputs:

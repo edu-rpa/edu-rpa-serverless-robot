@@ -83,7 +83,7 @@ def update_robot_state(event, context):
 
     if instance_name == None or instance_name.split(".")[0] != "edu-rpa-robot":
         return success_response({})
-    [user_id, process_id, version] = instance_name.split(".")[1].split("_")
+    [user_id, process_id, version] = instance_name.split(".")[1:]
 
     try:
         if instance_state != "terminated":
