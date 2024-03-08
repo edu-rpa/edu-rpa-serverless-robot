@@ -23,7 +23,7 @@ def success_response(body):
 
 def handle_create_schedule(user_id, process_id, version, create_schedule_dto):
     scheduler = boto3.client('scheduler')
-    schedule_name = f'edu-rpa-robot-schedule.{user_id}_{process_id}_{version}'
+    schedule_name = f'edu-rpa-robot-schedule.{user_id}.{process_id}.{version}'
 
     create_params = {
         'Name': schedule_name,
@@ -60,3 +60,29 @@ def handle_create_schedule(user_id, process_id, version, create_schedule_dto):
         return success_response(response)
     except Exception as e:
         return error_response(400, "Cannot Create Schedule", str(e))
+    
+def handle_update_schedule(user_id, process_id, version, update_schedule_dto):
+    scheduler = boto3.client('scheduler')
+    schedule_name = f'edu-rpa-robot-schedule.{user_id}.{process_id}.{version}'
+
+    update_params = {
+        'Name': schedule_name,
+        'ScheduleExpression': update_schedule_dto['schedule_expression'],
+        'ScheduleExpressionTimezone': 'UTC+07:00',
+        'State': 'ENABLED',
+    }
+
+    if 'schedule_expression_timezone' in update_schedule_dto:
+        update_params['ScheduleExpressionTimezone'] = update_schedule_dto['schedule_expression_timezone']
+
+    if 'start_date' in update_schedule_dto:
+        update_params['StartDate'] = update_schedule_dto['start_date']
+
+    if 'end_date' in update_schedule_dto:
+        update_params['EndDate'] = update_schedule_dto['end_date']
+
+    try:
+        response = scheduler.update_schedule(**update_params)
+        return success_response(response)
+    except Exception as e:
+        return error_response(400, "Cannot Update Schedule", str(e))

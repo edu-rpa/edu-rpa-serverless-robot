@@ -57,7 +57,7 @@ def launch_ec2(user_id, process_id, version, ami_id='ami-0d2e7d399f8a888b9'):
                 "Tags": [
                     {
                         "Key": "Name",
-                        "Value": f'edu-rpa-robot.{user_id}_{process_id}_{version}'
+                        "Value": f'edu-rpa-robot.{user_id}.{process_id}.{version}'
                     },
                 ]
             }
