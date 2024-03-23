@@ -8,7 +8,7 @@ Description: >
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Timeout: 3
+    Timeout: 10
     MemorySize: 128
 
     Tracing: Active
@@ -266,6 +266,21 @@ Resources:
           Properties:
             Path: /schedule
             Method: PUT
+            ApiId: !Ref RobotHttpApi
+
+  CheckNewEmailsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Zip
+      CodeUri: src/event/
+      Handler: app.check_new_emails
+      Runtime: python3.9
+      Events:
+        HttpGet:
+          Type: HttpApi
+          Properties:
+            Path: /event/emails
+            Method: GET
             ApiId: !Ref RobotHttpApi
 
 Outputs:
