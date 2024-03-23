@@ -18,7 +18,7 @@ def get_gmail_service(token, secret):
 
     return service
 
-def get_new_emails(service):
+def get_new_emails(service, filter):
     today = datetime.now(pytz.utc)
     query = f'after:{today.strftime("%Y/%m/%d")}'
 
@@ -33,10 +33,25 @@ def get_new_emails(service):
         for message in messages:
             msg = service.users().messages().get(userId='me', id=message['id']).execute()
             msg_time = int(msg['internalDate'])/1000
-            if msg_time > ten_minutes_ago_time:
+            if msg_time > ten_minutes_ago_time and filter_email(msg, filter):
                 new_emails.append(msg)
     except Exception as e:
         print(f'An error occurred: {e}')
         new_emails = []
 
     return new_emails
+
+def filter_email(msg, filter):
+    if filter['from'] == '' and filter['subject_contains'] == '':
+        return True
+
+    subject_contains = filter['subject_contains'].lower()
+
+    for header in msg['payload']['headers']:
+        if header['name'] == 'From' and filter['from'] != '' and filter['from'] not in header['value']:
+            return False
+        
+        if header['name'] == 'Subject' and subject_contains != '' and subject_contains not in header['value'].lower():
+            return False
+        
+    return True
