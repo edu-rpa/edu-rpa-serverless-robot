@@ -3,6 +3,6 @@
     "connection_name": "khanh0975964524@gmail.com",
     "filter": {
         "from": "",
-        "subject_contains": "123"
+        "subject": "123"
     }
 }

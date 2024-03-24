@@ -42,16 +42,16 @@ def get_new_emails(service, filter):
     return new_emails
 
 def filter_email(msg, filter):
-    if filter['from'] == '' and filter['subject_contains'] == '':
+    if filter['from'] == '' and filter['subject'] == '':
         return True
 
-    subject_contains = filter['subject_contains'].lower()
+    subject = filter['subject'].lower()
 
     for header in msg['payload']['headers']:
         if header['name'] == 'From' and filter['from'] != '' and filter['from'] not in header['value']:
             return False
         
-        if header['name'] == 'Subject' and subject_contains != '' and subject_contains not in header['value'].lower():
+        if header['name'] == 'Subject' and subject != '' and subject not in header['value'].lower():
             return False
         
     return True
