@@ -1,0 +1,17 @@
+POST http://127.0.0.1:3000/event
+Content-Type: application/json
+
+{
+    "user_id": 10,
+    "process_id": "aaaaaa",
+    "version": 1,
+    "event_schedule": {
+        "type": "new_emails",
+        "connection_name": "khanh0975964524@gmail.com",
+        "filter": {
+            "from": "",
+            "subject": ""
+        },
+        "state": "DISABLED"
+    }
+}

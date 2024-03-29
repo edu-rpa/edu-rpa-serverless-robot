@@ -8,6 +8,7 @@ ec2_client = boto3.client('ec2')
 def launch_ec2(user_id, process_id, version, ami_id='ami-0d2e7d399f8a888b9'):
     robot_code_file = f'robot/{user_id}/{process_id}/{version}/robot_code.json'
     robot_folder = os.path.dirname(robot_code_file)
+    robot_tag = f'edu-rpa-robot.{user_id}.{process_id}.{version}'
     
     cloudwatch_agent_script = f'''cd /tmp
         wget https://s3.ap-southeast-1.amazonaws.com/amazoncloudwatch-agent-ap-southeast-1/amazon_linux/amd64/latest/amazon-cloudwatch-agent.rpm
@@ -69,7 +70,7 @@ def launch_ec2(user_id, process_id, version, ami_id='ami-0d2e7d399f8a888b9'):
                 "Tags": [
                     {
                         "Key": "Name",
-                        "Value": f'edu-rpa-robot.{user_id}.{process_id}.{version}'
+                        "Value": robot_tag
                     },
                 ]
             }
