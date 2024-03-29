@@ -45,7 +45,7 @@ def handle_launch_instance(user_id, process_id, version):
         instance_response = launch_ec2(user_id, process_id, version)
     except Exception as e:
         return error_response(400, "Cannot Launch Robot Instance", str(e))
-    
+
     instance_id = instance_response["InstanceId"]
     launch_time = instance_response["LaunchTime"]
     state = instance_response["State"]["Name"]
