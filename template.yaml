@@ -8,7 +8,7 @@ Description: >
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Timeout: 10
+    Timeout: 15
     MemorySize: 128
 
     Tracing: Active
@@ -313,6 +313,25 @@ Resources:
             Path: /event
             Method: POST
             ApiId: !Ref RobotHttpApi
+
+  CheckNewFilesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Zip
+      CodeUri: src/event/
+      Handler: app.check_new_files
+      Runtime: python3.9
+      Policies:
+        - Statement:
+          - Effect: Allow
+            Action: 
+              - 'secretsmanager:GetSecretValue'
+            Resource: 'arn:aws:secretsmanager:ap-southeast-2:678601387840:secret:edu-rpa/dev/secrets-wpE1hy'
+        - Statement:
+          - Effect: Allow
+            Action:
+              - 'lambda:InvokeFunction'
+            Resource: 'arn:aws:lambda:ap-southeast-1:678601387840:function:edu-rpa-serverless-robot-RunRobotFunction-8sVtvmT4CL62'
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function

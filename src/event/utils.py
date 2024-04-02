@@ -5,6 +5,7 @@ import pymysql
 
 MAP_EVENT_TO_ARN = {
     'event-gmail': 'arn:aws:lambda:ap-southeast-1:678601387840:function:edu-rpa-serverless-robot-CheckNewEmailsFunction-cWQgt8S1jxLY',
+    'event-drive': 'arn:aws:lambda:ap-southeast-1:678601387840:function:edu-rpa-serverless-robot-CheckNewFilesFunction-GaKSJ6KdH05D',
 }
 
 RUN_ROBOT_ARN = 'arn:aws:lambda:ap-southeast-1:678601387840:function:edu-rpa-serverless-robot-RunRobotFunction-8sVtvmT4CL62'
