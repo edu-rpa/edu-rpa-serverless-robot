@@ -10,13 +10,7 @@ Globals:
   Function:
     Timeout: 10
     MemorySize: 128
-
     Tracing: Active
-    # You can add LoggingConfig parameters such as the Logformat, Log Group, and SystemLogLevel or ApplicationLogLevel. Learn more here https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html#sam-function-loggingconfig.
-    LoggingConfig:
-      LogFormat: JSON
-  Api:
-    TracingEnabled: true
 
 Resources:
   RobotTable:
