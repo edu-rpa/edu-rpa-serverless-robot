@@ -1,33 +1,46 @@
+import json
 import boto3
 import os
+from .config import cloudwatch_config
 
 ec2_client = boto3.client('ec2')
 
 def launch_ec2(user_id, process_id, version, ami_id='ami-0d2e7d399f8a888b9'):
     robot_code_file = f'robot/{user_id}/{process_id}/{version}/robot_code.json'
     robot_folder = os.path.dirname(robot_code_file)
+    robot_tag = f'edu-rpa-robot.{user_id}.{process_id}.{version}'
+    
+    cloudwatch_agent_script = f'''cd /tmp
+        wget https://s3.ap-southeast-1.amazonaws.com/amazoncloudwatch-agent-ap-southeast-1/amazon_linux/amd64/latest/amazon-cloudwatch-agent.rpm
+        rpm -U ./amazon-cloudwatch-agent.rpm
+        echo '{json.dumps(cloudwatch_config, indent=4)}'  > /opt/aws/amazon-cloudwatch-agent/bin/config.json
+        sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/bin/config.json
+    '''
+    
     user_data = f'''#!/bin/bash
-    sudo yum install pip -y
+    sudo yum install pip jq -y
     mkdir /home/ec2-user/robot && sudo chmod -R 777 /home/ec2-user/robot
     conda create -y -n robotenv python=3.9
     cd /var/lib/cloud/scripts/per-boot/
     sudo chmod -R 777 /var/lib/cloud/scripts/per-boot
+    touch /var/log/robot.log
     
     echo 'cd /home/ec2-user/robot \\
     && source /etc/profile.d/conda.sh \\
     && conda deactivate\\
     && conda activate robotenv \\
     && conda install -y boto3 packaging \\
-    && aws s3 cp s3://robot/utils/setup.py ./ \\
+    && aws s3 cp s3://robot-code/utils/setup.sh ./ \\
     && export ROBOT_FILE={robot_code_file} \\
     && sudo chmod -R 777 /home/ec2-user/robot \\
-    && python3 setup.py >> app.log\\
-    && aws s3 cp ./app.log s3://{robot_folder}/run/ \\
-    && aws s3 cp ./report.html s3://{robot_folder}/run/ \\
-    && aws s3 cp ./log.html s3://{robot_folder}/run/ \\
+    && bash setup.sh >> /var/log/robot.log \\
+    && aws s3 cp /var/log/robot.log s3://robot-code/{robot_folder}/run/ \\
+    && aws s3 cp ./report.html s3://robot-code/{robot_folder}/run/ \\
+    && aws s3 cp ./log.html s3://robot-code/{robot_folder}/run/ \\
     && sudo mv ./report.html ./log.html /var/www/html/.
     ' > script.sh
     
+    ${cloudwatch_agent_script}
     sudo chmod 777 script.sh
     source ./script.sh
     '''
@@ -57,7 +70,7 @@ def launch_ec2(user_id, process_id, version, ami_id='ami-0d2e7d399f8a888b9'):
                 "Tags": [
                     {
                         "Key": "Name",
-                        "Value": f'edu-rpa-robot.{user_id}.{process_id}.{version}'
+                        "Value": robot_tag
                     },
                 ]
             }
