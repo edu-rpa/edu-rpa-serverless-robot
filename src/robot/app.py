@@ -1,5 +1,6 @@
 import json
-from utils import *
+import botocore
+from utils.utils import *
 
 def run_robot(event, context):
     print(f'Event: {json_prettier(event)}')
@@ -14,9 +15,12 @@ def run_robot(event, context):
     process_id = body['process_id']
     version = body['version']
 
-    robot_response = robot_table.get_item(Key = {"userId": user_id, "processIdVersion": f'{process_id}.{version}'})
+    try:
+        robot_response = robot_table.get_item(Key = {"userId": user_id, "processIdVersion": f'{process_id}.{version}'})
+    except botocore.exceptions.ClientError as err: 
+        robot_response = None
 
-    if "Item" in robot_response:
+    if robot_response and "Item" in robot_response:
         instance_id = robot_response["Item"]["instanceId"]
         instance_state = robot_response["Item"]["instanceState"]
         if instance_state == "stopped":

@@ -1,6 +1,6 @@
 import json
 import boto3
-from utils_ec2 import *
+from .utils_ec2 import *
 from boto3.dynamodb.types import TypeDeserializer
 
 def ddb_deserialize(r, type_deserializer = TypeDeserializer()):
