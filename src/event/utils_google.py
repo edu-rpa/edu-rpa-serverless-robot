@@ -18,6 +18,36 @@ def get_gmail_service(token, secret):
 
     return service
 
+def get_drive_service(token, secret):
+    creds = Credentials.from_authorized_user_info({
+        'client_id': secret.get('GOOGLE_DRIVE_CLIENT_ID'),
+        'client_secret': secret.get('GOOGLE_DRIVE_CLIENT_SECRET'),
+        'refresh_token': token.get('refreshToken'),
+        'token_uri': 'https://oauth2.googleapis.com/token',
+        'scopes': ['https://www.googleapis.com/auth/drive']
+    })
+
+    service = build('drive', 'v3', credentials=creds)
+
+    return service
+
+def get_forms_service(token, secret):
+    creds = Credentials.from_authorized_user_info({
+        'client_id': secret.get('GOOGLE_FORMS_CLIENT_ID'),
+        'client_secret': secret.get('GOOGLE_FORMS_CLIENT_SECRET'),
+        'refresh_token': token.get('refreshToken'),
+        'token_uri': 'https://oauth2.googleapis.com/token',
+        'scopes': [
+            'https://www.googleapis.com/auth/forms.body',
+            'https://www.googleapis.com/auth/forms.responses.readonly',
+            'https://www.googleapis.com/auth/drive',
+        ]
+    })
+
+    service = build('forms', 'v1', credentials=creds)
+
+    return service
+
 def get_new_emails(service, filter):
     today = datetime.now(pytz.utc)
     query = f'after:{today.strftime("%Y/%m/%d")}'
@@ -55,3 +85,37 @@ def filter_email(msg, filter):
             return False
         
     return True
+
+def get_new_files(service, filter):
+    current_time = datetime.now(pytz.utc)
+    ten_minutes_ago = current_time - timedelta(minutes=10)
+    q = f"createdTime >= '{ten_minutes_ago.isoformat()}'"
+
+    if filter['name'] != '':
+        q += f" and name contains '{filter['name']}'"
+    
+    if filter['mime_type'] != '':
+        q += f" and mimeType = '{filter['mime_type']}'"
+
+    try:
+        results = service.files().list(q=q).execute()
+        new_files = results.get('files', [])
+    except Exception as e:
+        print(f'An error occurred: {e}')
+        new_files = []
+
+    return new_files
+
+def get_new_responses(form_id, service):
+    current_time = datetime.now(pytz.utc)
+    ten_minutes_ago = current_time - timedelta(minutes=10)
+    filter = f"timestamp >= {ten_minutes_ago.isoformat(timespec='seconds')}Z"
+
+    try:
+        results = service.forms().responses().list(formId=form_id, filter=filter).execute()
+        new_responses = results.get('responses', [])
+    except Exception as e:
+        print(f'An error occurred: {e}')
+        new_responses = []
+
+    return new_responses

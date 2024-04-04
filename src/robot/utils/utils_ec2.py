@@ -7,11 +7,11 @@ from .resource_config import getCloudWatchConfig
 ec2_client = boto3.client('ec2')
 
 def launch_ec2(user_id, process_id, version, ami_id='ami-0d2e7d399f8a888b9'):
-    robot_code_file = f'robot/{user_id}/{process_id}/{version}/robot_code.json'
+    robot_bucket = os.environ["ROBOT_BUCKET"]
+    robot_code_file = f'{robot_bucket}/{user_id}/{process_id}/{version}/robot_code.json'
     robot_folder = os.path.dirname(robot_code_file)
     robot_tag = f'edu-rpa-robot.{user_id}.{process_id}.{version}'
     robot_log_group = f'edu-rpa-robot-{user_id}-{process_id}'
-    robot_bucket = os.environ["ROBOT_BUCKET"]
     cloudwatch_agent_script = f'''cd /tmp
         wget https://s3.ap-southeast-1.amazonaws.com/amazoncloudwatch-agent-ap-southeast-1/amazon_linux/amd64/latest/amazon-cloudwatch-agent.rpm
         rpm -U ./amazon-cloudwatch-agent.rpm
@@ -36,9 +36,9 @@ def launch_ec2(user_id, process_id, version, ami_id='ami-0d2e7d399f8a888b9'):
     && export ROBOT_FILE={robot_code_file} \\
     && sudo chmod -R 777 /home/ec2-user/robot \\
     && bash setup.sh >> /var/log/robot.log \\
-    && aws s3 cp /var/log/robot.log s3://{robot_bucket}/{robot_folder}/run/ \\
-    && aws s3 cp ./report.html s3://{robot_bucket}/{robot_folder}/run/ \\
-    && aws s3 cp ./log.html s3://{robot_bucket}/{robot_folder}/run/ \\
+    && aws s3 cp /var/log/robot.log s3://{robot_folder}/run/ \\
+    && aws s3 cp ./report.html s3://{robot_folder}/run/ \\
+    && aws s3 cp ./log.html s3://{robot_folder}/run/ \\
     && sudo mv ./report.html ./log.html /var/www/html/.
     ' > script.sh
     
