@@ -1,0 +1,11 @@
+{
+  "version": "2.0",
+  "routeKey": "$default",
+  "rawPath": "/robot/run",
+  "body": {
+    "user_id": 9,
+    "process_id": "Process_7gguIJX",
+    "version": 5
+  },
+  "isBase64Encoded": true
+}

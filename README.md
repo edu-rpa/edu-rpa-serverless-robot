@@ -130,10 +130,23 @@ See the [AWS SAM developer guide](https://docs.aws.amazon.com/serverless-applica
 Next, you can use AWS Serverless Application Repository to deploy ready to use Apps that go beyond hello world samples and learn how authors developed their applications: [AWS Serverless Application Repository main page](https://aws.amazon.com/serverless/serverlessrepo/)
 
 
-# Upload setup file to S3
+# Generate API Gateway Event
+```bash
+sam local generate-event apigateway http-api-proxy > events/run-robot-event.json
+```
+
+# Deployment
+
+## Upload setup file to S3
 setup.sh is file for set up run robot on ec2 instance
 
 ```bash
 aws s3 cp setup.sh s3://edu-rpa-robot/utils/setup.sh
 ```
 
+## Set up Robot Run Env
+### EC2 AMI: 
+-  anaconda3-2023.07-on-amazon-linux-20230822.1530 - ami-0d2e7d399f8a888b9
+### IAM Robot Roles:
+- AmazonS3FullAccess
+- CloudWatchAgentServerPolicy
