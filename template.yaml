@@ -11,6 +11,9 @@ Globals:
     Timeout: 10
     MemorySize: 128
     Tracing: Active
+    Environment:
+        Variables:
+          ROBOT_BUCKET: edu-rpa-robot
 
 Resources:
   RobotTable:
