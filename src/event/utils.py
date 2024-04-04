@@ -5,7 +5,8 @@ import pymysql
 
 MAP_EVENT_TO_ARN = {
     'event-gmail': 'arn:aws:lambda:ap-southeast-1:678601387840:function:edu-rpa-serverless-robot-CheckNewEmailsFunction-cWQgt8S1jxLY',
-    'event-drive': 'arn:aws:lambda:ap-southeast-1:678601387840:function:edu-rpa-serverless-robot-CheckNewFilesFunction-GaKSJ6KdH05D',
+    'event-drive': 'arn:aws:lambda:ap-southeast-1:678601387840:function:edu-rpa-serverless-robot-CheckNewFilesFunction-Qen72azOFMeF',
+    'event-forms': 'arn:aws:lambda:ap-southeast-1:678601387840:function:edu-rpa-serverless-robot-CheckNewResponsesFunction-kbAmYT7v7Ly8',
 }
 
 RUN_ROBOT_ARN = 'arn:aws:lambda:ap-southeast-1:678601387840:function:edu-rpa-serverless-robot-RunRobotFunction-8sVtvmT4CL62'
@@ -97,13 +98,7 @@ def handle_create_event_schedule(user_id, process_id, version, event_schedule):
         'Target': {
             'Arn': MAP_EVENT_TO_ARN[event_schedule['type']],
             'RoleArn': 'arn:aws:iam::678601387840:role/Event_Scheduler_Role',
-            'Input': json.dumps({
-                "user_id": user_id,
-                "process_id": process_id,
-                "version": version,
-                "connection_name": event_schedule['connection_name'],
-                "filter": event_schedule['filter']
-            })
+            'Input': json.dumps(create_check_event_input(user_id, process_id, version, event_schedule))
         },
         'ScheduleExpression': 'rate(10 minutes)',
         'State': event_schedule['state'],
@@ -127,13 +122,7 @@ def handle_update_event_schedule(user_id, process_id, version, event_schedule, o
         'Target': {
             'Arn': old_schedule['Target']['Arn'],
             'RoleArn': old_schedule['Target']['RoleArn'],
-            'Input': json.dumps({
-                "user_id": user_id,
-                "process_id": process_id,
-                "version": version,
-                "connection_name": event_schedule['connection_name'],
-                "filter": event_schedule['filter']
-            })
+            'Input': json.dumps(create_check_event_input(user_id, process_id, version, event_schedule))
         },
     }
 
@@ -166,3 +155,17 @@ def run_robot_with_event(user_id, process_id, version, event_type, event_data):
     except Exception as e:
         print(f'Failed to invoke {function_name} with payload: {payload}')
         return error_response(400, "Cannot Run Robot", str(e))
+    
+def create_check_event_input(user_id, process_id, version, event_schedule):
+    input = {
+                "user_id": user_id,
+                "process_id": process_id,
+                "version": version,
+                "connection_name": event_schedule['connection_name'],
+            }
+    if event_schedule['type'] == 'event-forms':
+        input['form_id'] = event_schedule['form_id']
+    else:
+        input['filter'] = event_schedule['filter']
+
+    return input

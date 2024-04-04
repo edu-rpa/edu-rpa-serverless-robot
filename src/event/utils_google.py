@@ -31,6 +31,23 @@ def get_drive_service(token, secret):
 
     return service
 
+def get_forms_service(token, secret):
+    creds = Credentials.from_authorized_user_info({
+        'client_id': secret.get('GOOGLE_FORMS_CLIENT_ID'),
+        'client_secret': secret.get('GOOGLE_FORMS_CLIENT_SECRET'),
+        'refresh_token': token.get('refreshToken'),
+        'token_uri': 'https://oauth2.googleapis.com/token',
+        'scopes': [
+            'https://www.googleapis.com/auth/forms.body',
+            'https://www.googleapis.com/auth/forms.responses.readonly',
+            'https://www.googleapis.com/auth/drive',
+        ]
+    })
+
+    service = build('forms', 'v1', credentials=creds)
+
+    return service
+
 def get_new_emails(service, filter):
     today = datetime.now(pytz.utc)
     query = f'after:{today.strftime("%Y/%m/%d")}'
@@ -54,6 +71,21 @@ def get_new_emails(service, filter):
 
     return new_emails
 
+def filter_email(msg, filter):
+    if filter['from'] == '' and filter['subject'] == '':
+        return True
+
+    subject = filter['subject'].lower()
+
+    for header in msg['payload']['headers']:
+        if header['name'] == 'From' and filter['from'] != '' and filter['from'] not in header['value']:
+            return False
+        
+        if header['name'] == 'Subject' and subject != '' and subject not in header['value'].lower():
+            return False
+        
+    return True
+
 def get_new_files(service, filter):
     current_time = datetime.now(pytz.utc)
     ten_minutes_ago = current_time - timedelta(minutes=10)
@@ -74,17 +106,16 @@ def get_new_files(service, filter):
 
     return new_files
 
-def filter_email(msg, filter):
-    if filter['from'] == '' and filter['subject'] == '':
-        return True
+def get_new_responses(form_id, service):
+    current_time = datetime.now(pytz.utc)
+    ten_minutes_ago = current_time - timedelta(minutes=10)
+    filter = f"timestamp >= {ten_minutes_ago.isoformat(timespec='seconds')}Z"
 
-    subject = filter['subject'].lower()
+    try:
+        results = service.forms().responses().list(formId=form_id, filter=filter).execute()
+        new_responses = results.get('responses', [])
+    except Exception as e:
+        print(f'An error occurred: {e}')
+        new_responses = []
 
-    for header in msg['payload']['headers']:
-        if header['name'] == 'From' and filter['from'] != '' and filter['from'] not in header['value']:
-            return False
-        
-        if header['name'] == 'Subject' and subject != '' and subject not in header['value'].lower():
-            return False
-        
-    return True
+    return new_responses
