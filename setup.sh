@@ -4,12 +4,13 @@ bucket_name="edu-rpa-robot"
 object_name="$ROBOT_FILE"
 
 # Dependency map
-declare -A dependency_map
-dependency_map["RPA.Cloud.Google"]="rpaframework-google"
-dependency_map["RPA.Cloud.AWS"]="rpaframework-aws"
-dependency_map["EduRPA"]="EduRPA"
-dependency_map["pytorch"]="pytorch torchvision cpuonly -c pytorch"
-dependency_map["PDF"]="rpaframework-pdf"
+declare -A dependency_map=(
+    ["RPA.Cloud.Google"]="rpaframework-google"
+    ["RPA.Cloud.AWS"]="rpaframework-aws"
+    ["EduRPA"]="EduRPA"
+    ["pytorch"]="pytorch torchvision cpuonly -c pytorch"
+    ["PDF"]="rpaframework-pdf"
+)
 
 install_dependencies_from_robot_file() {
     # Read the contents of the Robot Framework file
@@ -40,12 +41,12 @@ install_dependencies_from_robot_file() {
         fi
         echo "Packages Not Installed: ${package_not_installed[*]}"
 
-        install_command=("pip" "install" $dependency)
+        install_command=("pip" "install" "-q" $dependency)
         echo "${install_command[@]}"
         "${install_command[@]}"
 
         if [[ $dependency == *"EduRPA"* ]]; then
-            install_command=("conda" "install" "-y" ${dependency_map["pytorch"]})
+            install_command=("conda" "install" "-y -q" ${dependency_map["pytorch"]})
             echo "${install_command[@]}"
             "${install_command[@]}"
         fi
@@ -92,6 +93,22 @@ check_package_installed() {
     echo "${package_not_installed[@]}"
 }
 
+wait_for_sync() {
+    file="/opt/aws/amazon-cloudwatch-agent/logs/state/_var_log_robot.log"
+    previous_checksum=""
+
+    while true; do
+        current_checksum=$(md5sum "$file" | awk '{print $1}')
+
+        if [ "$current_checksum" != "$previous_checksum" ]; then
+            previous_checksum="$current_checksum"
+        else
+            break
+        fi
+        sleep 10
+    done
+}
+
 main() {
     download_json_from_s3 "$bucket_name" "$object_name"
     robot_code=$(<robot.json)
@@ -108,6 +125,7 @@ main() {
     python3 -m robot robot.json
 
     echo "====== Turning off Robot ======"
+    wait_for_sync
     sudo shutdown now
 }
 

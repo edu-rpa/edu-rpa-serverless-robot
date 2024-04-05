@@ -1,52 +1,56 @@
 import json
+import textwrap
 import boto3
 import os
+
+from .script_gen import *
 
 from .resource_config import getCloudWatchConfig
 
 ec2_client = boto3.client('ec2')
 
 def launch_ec2(user_id, process_id, version, ami_id='ami-0d2e7d399f8a888b9'):
-    robot_bucket = os.environ["ROBOT_BUCKET"]
-    robot_code_file = f'{robot_bucket}/{user_id}/{process_id}/{version}/robot_code.json'
-    robot_folder = os.path.dirname(robot_code_file)
+    robot_uri = f"{user_id}/{process_id}/{version}"
     robot_tag = f'edu-rpa-robot.{user_id}.{process_id}.{version}'
     robot_log_group = f'edu-rpa-robot-{user_id}-{process_id}'
-    cloudwatch_agent_script = f'''cd /tmp
-        wget https://s3.ap-southeast-1.amazonaws.com/amazoncloudwatch-agent-ap-southeast-1/amazon_linux/amd64/latest/amazon-cloudwatch-agent.rpm
-        rpm -U ./amazon-cloudwatch-agent.rpm
-        echo '{json.dumps(getCloudWatchConfig(robot_log_group, version), indent=4)}'  > /opt/aws/amazon-cloudwatch-agent/bin/config.json
-        sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/bin/config.json
-    '''
+    robot_bucket = os.environ["ROBOT_BUCKET"]
+    robot_table = os.environ["ROBOT_TABLE"]
+    cloudwatch_config = getCloudWatchConfig(robot_log_group, version)
+    ###### Don't change any indent in these code !!! ######
+    # Cloudwatch Agent Start Script
+    cloudwatch_agent_start_script = cloudwatch_agent_start(cloudwatch_config,robot_table, user_id, f"{process_id}.{version}")
+    # Cloudwatch Init Start Script
+    cloudwatch_agent_init_script = cloudwatch_agent_init()
+    # Script that ec2 run per boot
+    init_script = instance_init(
+        robot_bucket=robot_bucket, 
+        robot_uri=robot_uri, 
+        cloudwatch_agent_start=cloudwatch_agent_start_script
+    )
     
-    user_data = f'''#!/bin/bash
-    sudo yum install pip jq -y
-    mkdir /home/ec2-user/robot && sudo chmod -R 777 /home/ec2-user/robot
-    conda create -y -n robotenv python=3.9
-    cd /var/lib/cloud/scripts/per-boot/
-    sudo chmod -R 777 /var/lib/cloud/scripts/per-boot
-    touch /var/log/robot.log
-    
-    echo 'cd /home/ec2-user/robot \\
-    && source /etc/profile.d/conda.sh \\
-    && conda deactivate\\
-    && conda activate robotenv \\
-    && conda install -y boto3 packaging \\
-    && aws s3 cp s3://{robot_bucket}/utils/setup.sh ./ \\
-    && export ROBOT_FILE={robot_code_file} \\
-    && sudo chmod -R 777 /home/ec2-user/robot \\
-    && bash setup.sh >> /var/log/robot.log \\
-    && aws s3 cp /var/log/robot.log s3://{robot_folder}/run/ \\
-    && aws s3 cp ./report.html s3://{robot_folder}/run/ \\
-    && aws s3 cp ./log.html s3://{robot_folder}/run/ \\
-    && sudo mv ./report.html ./log.html /var/www/html/.
-    ' > script.sh
-    
-    ${cloudwatch_agent_script}
-    sudo chmod 777 script.sh
-    source ./script.sh
-    '''
+    # User data script
+    user_data = textwrap.dedent(f'''
+#!/bin/bash
+# Install And Create Resource
+sudo yum install pip jq dos2unix -y
+mkdir /home/ec2-user/robot && sudo chmod -R 777 /home/ec2-user/robot
+conda create -y -n robotenv python=3.9
+sudo chmod -R 777 /var/lib/cloud/scripts/per-boot
+touch /var/log/robot.log
 
+# Init Script    
+{init_script}
+
+# Start Agent Script
+{cloudwatch_agent_init_script}
+
+# Run Robot Script
+cd /var/lib/cloud/scripts/per-boot/
+sudo chmod 777 script.sh
+source ./script.sh
+''')
+    
+    ###### Don't change any indent in these code !!! ######
     instance_params = {
         'ImageId':ami_id,
         'InstanceType': 't3.small',
