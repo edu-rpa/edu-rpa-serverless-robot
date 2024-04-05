@@ -33,11 +33,14 @@ echo 'cd /home/ec2-user/robot \\
 ' > /var/lib/cloud/scripts/per-boot/script.sh''')
     
 def update_log_robot_table(table_name, userId, processIdVersion):
+    dynamoDB_CMD = f"""aws dynamodb update-item \\
+--table-name {table_name} \\
+--region ap-southeast-1 \\
+--key "{{\\"userId\\": {{\\"S\\": \\"{userId}\\"}}, \\"processIdVersion\\": {{\\"S\\": \\"{processIdVersion}\\"}}}}" \\
+--update-expression "SET logGroup = :lg, logStream = :ls" \\
+--expression-attribute-values "{{\\":lg\\": {{\\"S\\": \\""$log_group"\\"}}, \\":ls\\": {{\\"S\\": \\""$log_stream"\\"}}}}" """
+ 
     return textwrap.dedent(f"""log_group=$(jq -r '.logs.logs_collected.files.collect_list[0].log_group_name' /opt/aws/amazon-cloudwatch-agent/bin/config.json)
 log_stream=$(jq -r '.logs.logs_collected.files.collect_list[0].log_stream_name' /opt/aws/amazon-cloudwatch-agent/bin/config.json)
-aws dynamodb update-item \\
-    --table-name {table_name} \\
-    --key '{{"userId": {{"S": "{userId}"}}, "processIdVersion": {{"S": "{processIdVersion}"}}}}' \\
-    --update-expression "SET logGroup = :lg, logStream = :ls" \\
-    --expression-attribute-values '{{":lg": {{"S": "'"$log_group"'"}}, ":ls": {{"S": "'"$log_stream"'"}}}}'""")
+{dynamoDB_CMD}""")
 

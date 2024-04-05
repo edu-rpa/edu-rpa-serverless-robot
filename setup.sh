@@ -102,6 +102,8 @@ wait_for_sync() {
 
         if [ "$current_checksum" != "$previous_checksum" ]; then
             previous_checksum="$current_checksum"
+        else
+            break
         fi
         sleep 10
     done
