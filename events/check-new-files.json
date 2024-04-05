@@ -1,0 +1,10 @@
+{
+    "user_id": 2,
+    "process_id": "xxxxxxxx",
+    "version": 1,
+    "connection_name": "khanh0975964524@gmail.com",
+    "filter": {
+        "name": "com",
+        "mime_type": ""     
+    }
+}
