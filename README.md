@@ -150,3 +150,14 @@ aws s3 cp setup.sh s3://edu-rpa-robot/utils/setup.sh
 ### IAM Robot Roles:
 - AmazonS3FullAccess
 - CloudWatchAgentServerPolicy
+- DynamoDBAccessPolicy (Manual Configure)
+
+# Robot Resource:
+- DynamoDB Robot Information
+- Cloudwatch Log
+
+# Hot Reload
+```bash
+sam local start-api -t template.yaml --skip-pull-image
+```
+
