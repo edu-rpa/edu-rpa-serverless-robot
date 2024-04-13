@@ -1,4 +1,5 @@
 import json
+import os
 import textwrap
 
 def cloudwatch_agent_start(cloudwatch_config, table_name,userId,processVersionId):
@@ -29,8 +30,8 @@ echo 'cd /home/ec2-user/robot \\
 && sudo aws s3 cp /var/log/robot.log s3://{robot_bucket}/{robot_uri}/run/ \\
 && sudo aws s3 cp ./report.html s3://{robot_bucket}/{robot_uri}/run/ \\
 && sudo aws s3 cp ./log.html s3://{robot_bucket}/{robot_uri}/run/ \\
-&& sudo mv ./report.html ./log.html /var/www/html/.
-' > /var/lib/cloud/scripts/per-boot/script.sh''')
+&& sudo mv ./report.html ./log.html /var/www/html/' > /var/lib/cloud/scripts/per-boot/script.sh 
+''')
     
 def update_log_robot_table(table_name, userId, processIdVersion):
     dynamoDB_CMD = f"""aws dynamodb update-item \\
@@ -44,3 +45,15 @@ def update_log_robot_table(table_name, userId, processIdVersion):
 log_stream=$(jq -r '.logs.logs_collected.files.collect_list[0].log_stream_name' /opt/aws/amazon-cloudwatch-agent/bin/config.json)
 {dynamoDB_CMD}""")
 
+def create_env_variable(userId, processId, processVersion):
+    return textwrap.dedent(f'''# Add environment variable setup to shell configuration file
+echo "export MAIN_SERVER_API=\"{os.environ.get('MAIN_SERVER_API')}\"" | sudo tee -a /etc/profile
+echo "export SERVICE_KEY=\"{os.environ.get('SERVICE_KEY')}\"" | sudo tee -a /etc/profile
+echo "export USER_ID=\"{userId}\"" | sudo tee -a /etc/profile
+echo "export PROCESS_ID=\"{processId}\"" | sudo tee -a /etc/profile
+echo "export PROCESS_VERSION=\"{processVersion}\"" | sudo tee -a /etc/profile
+echo "export ROBOT_FOLDER=\"/home/ec2-user/robot\"" | sudo tee -a /etc/profile
+echo "export ROBOT_CREDENTIAL_FOLDER=\"\$ROBOT_FOLDER/devdata\"" | sudo tee -a /etc/profile
+
+source /etc/profile
+''')
