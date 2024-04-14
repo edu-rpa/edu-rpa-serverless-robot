@@ -122,6 +122,7 @@ main() {
     install_dependencies_from_robot_file "$robot_code"
 
     echo "====== Get Robot Credentials ======"
+    source ~/.bash_profile
     get-credential
 
     echo "====== Running Robot ======"

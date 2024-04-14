@@ -27,7 +27,7 @@ def launch_ec2(user_id, process_id, version, ami_id='ami-0d2e7d399f8a888b9'):
     init_script = instance_init(
         robot_bucket=robot_bucket, 
         robot_uri=robot_uri, 
-        cloudwatch_agent_start=cloudwatch_agent_start_script
+        cloudwatch_agent_start=cloudwatch_agent_start_script,
     )
     
     # User data script
@@ -40,9 +40,10 @@ conda create -y -n robotenv python=3.9
 sudo chmod -R 777 /var/lib/cloud/scripts/per-boot
 touch /var/log/robot.log
 aws s3 cp s3://edu-rpa-robot/utils/get-credential .
-sudo chmod +x get-credential
+sudo chmod 755 get-credential
 sudo mv ./get-credential /usr/local/bin
 
+{env_variables}
 # Init Script    
 {init_script}
 

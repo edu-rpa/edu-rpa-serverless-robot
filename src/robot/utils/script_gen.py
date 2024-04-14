@@ -47,13 +47,13 @@ log_stream=$(jq -r '.logs.logs_collected.files.collect_list[0].log_stream_name' 
 
 def create_env_variable(userId, processId, processVersion):
     return textwrap.dedent(f'''# Add environment variable setup to shell configuration file
-echo "export MAIN_SERVER_API=\"{os.environ.get('MAIN_SERVER_API')}\"" | sudo tee -a /etc/profile
-echo "export SERVICE_KEY=\"{os.environ.get('SERVICE_KEY')}\"" | sudo tee -a /etc/profile
-echo "export USER_ID=\"{userId}\"" | sudo tee -a /etc/profile
-echo "export PROCESS_ID=\"{processId}\"" | sudo tee -a /etc/profile
-echo "export PROCESS_VERSION=\"{processVersion}\"" | sudo tee -a /etc/profile
-echo "export ROBOT_FOLDER=\"/home/ec2-user/robot\"" | sudo tee -a /etc/profile
-echo "export ROBOT_CREDENTIAL_FOLDER=\"\$ROBOT_FOLDER/devdata\"" | sudo tee -a /etc/profile
+echo "export MAIN_SERVER_API=\"{os.environ.get('MAIN_SERVER_API')}\"" | sudo tee -a ~/.bash_profile
+echo "export SERVICE_KEY=\"{os.environ.get('SERVICE_KEY')}\"" | sudo tee -a ~/.bash_profile
+echo "export USER_ID=\"{userId}\"" | sudo tee -a ~/.bash_profile
+echo "export PROCESS_ID=\"{processId}\"" | sudo tee -a ~/.bash_profile
+echo "export PROCESS_VERSION=\"{processVersion}\"" | sudo tee -a ~/.bash_profile
+echo "export ROBOT_FOLDER=\"/home/ec2-user/robot\"" | sudo tee -a ~/.bash_profile
+echo "export ROBOT_CREDENTIAL_FOLDER=\"\$ROBOT_FOLDER/devdata\"" | sudo tee -a ~/.bash_profile
 
-source /etc/profile
+source ~/.bash_profile
 ''')
