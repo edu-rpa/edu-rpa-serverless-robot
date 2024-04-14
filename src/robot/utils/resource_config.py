@@ -6,8 +6,8 @@ def getCloudWatchConfig(robot_log_group, robot_version):
                     "collect_list": [
                         {
                             "file_path": "/var/log/robot.log",
-                            "log_group_name": f"robot/log/{robot_log_group}",  
-                            "log_stream_name": f"robot_v{robot_version}/stream_$(uuidgen -r)", 
+                            "log_group_name": f"robot/log/{robot_log_group}-v{robot_version}",  
+                            "log_stream_name": f"stream_$(uuidgen -r)", 
                             "timezone": "UTC"
                         }
                     ]
