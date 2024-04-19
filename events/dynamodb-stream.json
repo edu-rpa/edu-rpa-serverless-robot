@@ -1,0 +1,46 @@
+{
+    "Records": [
+      {
+        "eventID": "1",
+        "eventName": "INSERT",
+        "eventVersion": "1.1",
+        "eventSource": "aws:dynamodb",
+        "awsRegion": "us-west-2",
+        "dynamodb": {
+          "Keys": {
+            "instance_id": {
+              "S": "12345"
+            }
+          },
+          "NewImage": {
+            "instance_id": {
+              "S": "12345"
+            },
+            "process_id_version": {
+              "S": "process123"
+            },
+            "user_id": {
+              "S": "user123"
+            },
+            "instance_state": {
+              "S": "running"
+            },
+            "launch_time": {
+              "S": "2024-04-20T10:00:00Z"
+            },
+            "last_run": {
+              "S": "success"
+            },
+            "description": {
+              "S": "Sample description"
+            }
+          },
+          "SequenceNumber": "111",
+          "SizeBytes": 26,
+          "StreamViewType": "NEW_AND_OLD_IMAGES"
+        },
+        "eventSourceARN": "arn:aws:dynamodb:us-west-2:123456789012:table/YourDynamoDBTable/stream/2024-04-20T00:00:00.000"
+      }
+    ]
+  }
+  

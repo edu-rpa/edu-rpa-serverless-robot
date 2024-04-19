@@ -17,6 +17,10 @@ Globals:
           ROBOT_TABLE: robot
           MAIN_SERVER_API: https://edu-rpa-api.dev-quangkhanh.xyz
           SERVICE_KEY: e238e535-decb-4e18-9ef2-5094cf4b9a08
+          MYSQL_HOST: edu-rpa-db-dev.cahnyqo389dg.ap-southeast-2.rds.amazonaws.com
+          REPORT_AGENT_SQL: report_agent
+          REPORT_AGENT_PWD: rA93{1L8=9D!
+          REPORT_SCHEMA: report
 
 Resources:
   RobotTable:
