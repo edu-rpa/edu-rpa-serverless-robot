@@ -2,6 +2,7 @@ import boto3
 from botocore.exceptions import ClientError
 import json
 import pymysql
+from notification import *
 
 MAP_EVENT_TO_ARN = {
     'event-gmail': 'arn:aws:lambda:ap-southeast-1:678601387840:function:edu-rpa-serverless-robot-CheckNewEmailsFunction-cWQgt8S1jxLY',
@@ -141,6 +142,7 @@ def run_robot_with_event(user_id, process_id, version, event_type, event_data):
             "user_id": str(user_id),
             "process_id": process_id,
             "version": version,
+            "trigger_type": event_type,
         }
     })
 
@@ -154,6 +156,12 @@ def run_robot_with_event(user_id, process_id, version, event_type, event_data):
         return success_response(response)
     except Exception as e:
         print(f'Failed to invoke {function_name} with payload: {payload}')
+        notify_by_trigger(
+            user_id, 
+            event_type, 
+            "Cannot trigger bobot", 
+            f"Cannot trigger bobot of process {process_id}.v{version} triggered by {event_type}: {str(e)}"
+        )
         return error_response(400, "Cannot Run Robot", str(e))
     
 def create_check_event_input(user_id, process_id, version, event_schedule):

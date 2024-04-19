@@ -37,7 +37,8 @@ def handle_create_schedule(user_id, process_id, version, create_schedule_dto):
                 "body": {
                     "user_id": user_id,
                     "process_id": process_id,
-                    "version": version
+                    "version": version,
+                    "trigger_type": "schedule"
                 }
             })
         },
