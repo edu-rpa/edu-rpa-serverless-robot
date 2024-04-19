@@ -13,10 +13,11 @@ def notify_by_trigger(user_id, trigger_type, title, content):
         'Service-Key': os.environ['SERVICE_KEY']
     }
     body = {
-        'userId': user_id,
+        'userId': int(user_id),
         'type': notification_type,
         'title': title,
         'content': content
     }
     response = requests.post(url, headers=headers, json=body)
+    print(f"Sent notification to {user_id} with result: {response.json()}")
     return response.json()
