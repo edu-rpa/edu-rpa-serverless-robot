@@ -22,7 +22,7 @@ def check_new_emails(event, context):
     print(f'Successfully retrieved token of: {token.get("name")} for service: {service}')
 
     service = get_gmail_service(token, secret)
-    new_emails = get_new_emails(service, filter)
+    new_emails = get_new_emails(user_id, process_id, version, service, filter)
 
     print(f'Found {len(new_emails)} new emails')
     if len(new_emails) == 0:
@@ -51,7 +51,7 @@ def check_new_files(event, context):
     print(f'Successfully retrieved token of: {token.get("name")} for service: {service}')
 
     service = get_drive_service(token, secret)
-    new_files = get_new_files(service, filter)
+    new_files = get_new_files(user_id, process_id, version, service, filter)
 
     print(f'Found {len(new_files)} new files')
     if len(new_files) == 0:
@@ -80,7 +80,7 @@ def check_new_responses(event, context):
     print(f'Successfully retrieved token of: {token.get("name")} for service: {service}')
 
     service = get_forms_service(token, secret)
-    new_responses = get_new_responses(form_id, service)
+    new_responses = get_new_responses(user_id, process_id, version, form_id, service)
 
     print(f'Found {len(new_responses)} new responses')
     if len(new_responses) == 0:

@@ -14,6 +14,7 @@ def run_robot(event, context):
     user_id = body['user_id']
     process_id = body['process_id']
     version = body['version']
+    trigger_type = body['trigger_type']
 
     try:
         robot_response = robot_table.get_item(Key = {"userId": user_id, "processIdVersion": f'{process_id}.{version}'})
@@ -24,13 +25,13 @@ def run_robot(event, context):
         instance_id = robot_response["Item"]["instanceId"]
         instance_state = robot_response["Item"]["instanceState"]
         if instance_state == "stopped":
-            return handle_start_robot_instance(user_id, process_id, version, instance_id)
+            return handle_start_robot_instance(user_id, process_id, version, instance_id, trigger_type)
         elif instance_state == "running":
             return error_response(400, "Robot Instance Already Running", "Cannot Start Running Instance")
         else:
             return error_response(400, "Robot Instance Not Stable", "Wait for a while and try again.")
     else:
-        return handle_launch_instance(user_id, process_id, version)
+        return handle_launch_instance(user_id, process_id, version, trigger_type)
 
 
 def stop_robot(event, context):

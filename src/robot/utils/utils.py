@@ -2,6 +2,7 @@ import json
 import boto3
 from .utils_ec2 import *
 from boto3.dynamodb.types import TypeDeserializer
+from notification import *
 
 def ddb_deserialize(r, type_deserializer = TypeDeserializer()):
     return type_deserializer.deserialize({"M": r})
@@ -38,12 +39,18 @@ def success_response(body):
         'body': json.dumps(body, default=str)
     }
 
-def handle_launch_instance(user_id, process_id, version):
+def handle_launch_instance(user_id, process_id, version, trigger_type):
     robot_table = get_robot_table()
 
     try:
         instance_response = launch_ec2(user_id, process_id, version)
     except Exception as e:
+        notify_by_trigger(
+            user_id, 
+            trigger_type, 
+            "Cannot trigger robot", 
+            f"Cannot trigger robot of process {process_id}.v{version} triggered by {trigger_type}: {str(e)}"
+        )
         return error_response(400, "Cannot Launch Robot Instance", str(e))
 
     instance_id = instance_response["InstanceId"]
@@ -61,17 +68,41 @@ def handle_launch_instance(user_id, process_id, version):
     try:
         robot_table.put_item(Item = robot_detail)
     except Exception as e:
+        notify_by_trigger(
+            user_id, 
+            trigger_type,  
+            "Cannot save robot detail", 
+            f"Cannot save robot detail of process {process_id}.v{version} triggered by {trigger_type}: {str(e)}"
+        )
         return error_response(400, "Cannot Update Robot Detail", str(e))
     
+    notify_by_trigger(
+        user_id,
+        trigger_type,
+        "Successfully triggered robot",
+        f"Robot instance of process {process_id}.v{version} triggered by {trigger_type} launched successfully."
+    )
     return success_response(robot_detail)
 
-def handle_start_robot_instance(user_id, process_id, version, instance_id):
+def handle_start_robot_instance(user_id, process_id, version, instance_id, trigger_type):
     try:
         instance_response = start_ec2_robot(instance_id)
     except Exception as e:
+        notify_by_trigger(
+            user_id, 
+            trigger_type, 
+            "Cannot trigger robot", 
+            f"Cannot trigger robot of process {process_id}.v{version} triggered by {trigger_type}: {str(e)}"
+        )
         return error_response(400, "Cannot Start Robot Instance", str(e))
     
     current_state = instance_response["CurrentState"]["Name"]
+    notify_by_trigger(
+        user_id,
+        trigger_type,
+        "Successfully triggered robot",
+        f"Robot instance of process {process_id}.v{version} triggered by {trigger_type} started successfully."
+    )
     return success_response({"state": current_state})
 
 def handle_stop_robot_instance(user_id, process_id, version, instance_id):

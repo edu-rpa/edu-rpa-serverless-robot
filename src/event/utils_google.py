@@ -2,6 +2,7 @@ from googleapiclient.discovery import build
 from datetime import datetime, timedelta
 from google.oauth2.credentials import Credentials
 import pytz
+from notification import *
 
 def get_gmail_service(token, secret):
     # token is a dict with keys: userId, name, provider, refreshToken, accessToken
@@ -48,7 +49,7 @@ def get_forms_service(token, secret):
 
     return service
 
-def get_new_emails(service, filter):
+def get_new_emails(user_id, process_id, version, service, filter):
     today = datetime.now(pytz.utc)
     query = f'after:{today.strftime("%Y/%m/%d")}'
 
@@ -67,6 +68,12 @@ def get_new_emails(service, filter):
                 new_emails.append(msg)
     except Exception as e:
         print(f'An error occurred: {e}')
+        notify_by_trigger(
+            user_id, 
+            "event-gmail", 
+            "Cannot trigger robot by new emails", 
+            f"Cannot get new emails to trigger robot {process_id}.v{version}: {str(e)}"
+        )
         new_emails = []
 
     return new_emails
@@ -86,7 +93,7 @@ def filter_email(msg, filter):
         
     return True
 
-def get_new_files(service, filter):
+def get_new_files(user_id, process_id, version, service, filter):
     current_time = datetime.now(pytz.utc)
     ten_minutes_ago = current_time - timedelta(minutes=10)
     q = f"createdTime >= '{ten_minutes_ago.isoformat()}'"
@@ -102,11 +109,17 @@ def get_new_files(service, filter):
         new_files = results.get('files', [])
     except Exception as e:
         print(f'An error occurred: {e}')
+        notify_by_trigger(
+            user_id, 
+            "event-drive", 
+            "Cannot trigger robot by new files", 
+            f"Cannot get new files to trigger robot {process_id}.v{version}: {str(e)}"
+        )
         new_files = []
 
     return new_files
 
-def get_new_responses(form_id, service):
+def get_new_responses(user_id, process_id, version, form_id, service):
     current_time = datetime.now(pytz.utc)
     ten_minutes_ago = current_time - timedelta(minutes=10)
     filter = f"timestamp >= {ten_minutes_ago.isoformat(timespec='seconds')}Z"
@@ -116,6 +129,12 @@ def get_new_responses(form_id, service):
         new_responses = results.get('responses', [])
     except Exception as e:
         print(f'An error occurred: {e}')
+        notify_by_trigger(
+            user_id, 
+            "event-forms", 
+            "Cannot trigger robot by new responses", 
+            f"Cannot get new responses to trigger robot {process_id}.v{version}: {str(e)}"
+        )
         new_responses = []
 
     return new_responses
