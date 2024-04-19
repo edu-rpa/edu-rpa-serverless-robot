@@ -1,4 +1,3 @@
-import json
 import textwrap
 import boto3
 import os

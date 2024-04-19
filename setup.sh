@@ -8,6 +8,7 @@ declare -A dependency_map=(
     ["RPA.Cloud.Google"]="rpaframework-google"
     ["RPA.Cloud.AWS"]="rpaframework-aws"
     ["EduRPA"]="EduRPA"
+    ["EduRPA.Google"]="edurpa-google"
     ["pytorch"]="pytorch torchvision cpuonly -c pytorch"
     ["PDF"]="rpaframework-pdf"
 )
