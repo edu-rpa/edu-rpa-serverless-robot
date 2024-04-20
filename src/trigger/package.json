@@ -1,0 +1,19 @@
+{
+  "name": "trigger",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "test": "node temp.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/util-dynamodb": "^3.556.0",
+    "aws-sdk": "^2.1603.0",
+    "mysql2": "^3.9.6"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.7"
+  }
+}

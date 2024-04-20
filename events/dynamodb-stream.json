@@ -1,46 +1,294 @@
 {
     "Records": [
-      {
-        "eventID": "1",
-        "eventName": "INSERT",
-        "eventVersion": "1.1",
-        "eventSource": "aws:dynamodb",
-        "awsRegion": "us-west-2",
-        "dynamodb": {
-          "Keys": {
-            "instance_id": {
-              "S": "12345"
-            }
-          },
-          "NewImage": {
-            "instance_id": {
-              "S": "12345"
+        {
+            "eventID": "294e71f4afda17f02b25e0270734f7d1",
+            "eventName": "MODIFY",
+            "eventVersion": "1.1",
+            "eventSource": "aws:dynamodb",
+            "awsRegion": "ap-southeast-1",
+            "dynamodb": {
+                "ApproximateCreationDateTime": 1713605580,
+                "Keys": {
+                    "processIdVersion": {
+                        "S": "Process_94XTLQD.1.detail"
+                    },
+                    "userId": {
+                        "S": "7"
+                    }
+                },
+                "NewImage": {
+                    "processIdVersion": {
+                        "S": "Process_94XTLQD.1.detail"
+                    },
+                    "robotDetail": {
+                        "M": {
+                            "stats": {
+                                "M": {
+                                    "failed": {
+                                        "N": "3"
+                                    },
+                                    "passed": {
+                                        "N": "0"
+                                    }
+                                }
+                            },
+                            "run": {
+                                "L": [
+                                    {
+                                        "M": {
+                                            "kw_status": {
+                                                "S": "PASS"
+                                            },
+                                            "start_time": {
+                                                "S": "20240420 13:48:02.979"
+                                            },
+                                            "kw_args": {
+                                                "L": [
+                                                    {
+                                                        "S": "./devdata/token-classroom.json"
+                                                    }
+                                                ]
+                                            },
+                                            "kw_name": {
+                                                "S": "EduRPA.Google.Classroom.Set Up Classroom Connection"
+                                            },
+                                            "end_time": {
+                                                "S": "20240420 13:48:02.979"
+                                            },
+                                            "messages": {
+                                                "S": ""
+                                            },
+                                            "id": {
+                                                "S": "1"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "M": {
+                                            "kw_status": {
+                                                "S": "FAIL"
+                                            },
+                                            "start_time": {
+                                                "S": "20240420 13:48:02.979"
+                                            },
+                                            "kw_args": {
+                                                "L": [
+                                                    {
+                                                        "S": "${COURSE_NAME}"
+                                                    },
+                                                    {
+                                                        "S": "${USER}"
+                                                    }
+                                                ]
+                                            },
+                                            "kw_name": {
+                                                "S": "EduRPA.Google.Classroom.Create Course"
+                                            },
+                                            "end_time": {
+                                                "S": "20240420 13:48:07.637"
+                                            },
+                                            "messages": {
+                                                "S": "file_cache is only supported with oauth2client<4.0.0"
+                                            },
+                                            "id": {
+                                                "S": "2"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "M": {
+                                            "kw_status": {
+                                                "S": "NOT RUN"
+                                            },
+                                            "start_time": {
+                                                "S": "20240420 13:48:07.638"
+                                            },
+                                            "kw_args": {
+                                                "L": [
+                                                    {
+                                                        "S": "Course ID: ${course_id}"
+                                                    }
+                                                ]
+                                            },
+                                            "kw_name": {
+                                                "S": "BuiltIn.Log"
+                                            },
+                                            "end_time": {
+                                                "S": "20240420 13:48:07.638"
+                                            },
+                                            "messages": {
+                                                "S": ""
+                                            },
+                                            "id": {
+                                                "S": "3"
+                                            }
+                                        }
+                                    }
+                                ]
+                            },
+                            "errors": {
+                                "M": {
+                                    "error": {
+                                        "BOOL": false
+                                    },
+                                    "message": {
+                                        "S": "No execution errors"
+                                    }
+                                }
+                            },
+                            "time_result": {
+                                "M": {
+                                    "elapsed_time": {
+                                        "S": "0:00:04.930000"
+                                    },
+                                    "endtime": {
+                                        "S": "2024-04-20 13:48:07"
+                                    },
+                                    "starttime": {
+                                        "S": "2024-04-20 13:48:02"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "userId": {
+                        "S": "7"
+                    },
+                    "uuid": {
+                        "S": "hsddkfhoi1323182308919237-123jsdgdfjhsjdfhb"
+                    }
+                },
+                "OldImage": {
+                    "processIdVersion": {
+                        "S": "Process_94XTLQD.1_detail"
+                    },
+                    "robotDetail": {
+                        "M": {
+                            "stats": {
+                                "M": {
+                                    "failed": {
+                                        "N": "3"
+                                    },
+                                    "passed": {
+                                        "N": "0"
+                                    }
+                                }
+                            },
+                            "run": {
+                                "L": [
+                                    {
+                                        "M": {
+                                            "kw_status": {
+                                                "S": "PASS"
+                                            },
+                                            "start_time": {
+                                                "S": "20240420 13:48:02.979"
+                                            },
+                                            "kw_args": {
+                                                "L": [
+                                                    {
+                                                        "S": "./devdata/token-classroom.json"
+                                                    }
+                                                ]
+                                            },
+                                            "kw_name": {
+                                                "S": "EduRPA.Google.Classroom.Set Up Classroom Connection"
+                                            },
+                                            "end_time": {
+                                                "S": "20240420 13:48:02.979"
+                                            },
+                                            "messages": {
+                                                "S": ""
+                                            },
+                                            "id": {
+                                                "S": "1"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "M": {
+                                            "kw_status": {
+                                                "S": "FAIL"
+                                            },
+                                            "start_time": {
+                                                "S": "20240420 13:48:02.979"
+                                            },
+                                            "kw_args": {
+                                                "L": [
+                                                    {
+                                                        "S": "${COURSE_NAME}"
+                                                    },
+                                                    {
+                                                        "S": "${USER}"
+                                                    }
+                                                ]
+                                            },
+                                            "kw_name": {
+                                                "S": "EduRPA.Google.Classroom.Create Course"
+                                            },
+                                            "end_time": {
+                                                "S": "20240420 13:48:07.637"
+                                            },
+                                            "messages": {
+                                                "S": "file_cache is only supported with oauth2client<4.0.0"
+                                            },
+                                            "id": {
+                                                "S": "2"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "M": {
+                                            "kw_status": {
+                                                "S": "NOT RUN"
+                                            },
+                                            "start_time": {
+                                                "S": "20240420 13:48:07.638"
+                                            },
+                                            "kw_args": {
+                                                "L": [
+                                                    {
+                                                        "S": "Course ID: ${course_id}"
+                                                    }
+                                                ]
+                                            },
+                                            "kw_name": {
+                                                "S": "BuiltIn.Log"
+                                            },
+                                            "end_time": {
+                                                "S": "20240420 13:48:07.638"
+                                            },
+                                            "messages": {
+                                                "S": ""
+                                            },
+                                            "id": {
+                                                "S": "3"
+                                            }
+                                        }
+                                    }
+                                ]
+                            },
+                            "errors": {
+                                "M": {
+                                    "error": {
+                                        "BOOL": false
+                                    },
+                                    "message": {
+                                        "S": "No execution errors"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "userId": {
+                        "S": "7"
+                    }
+                },
+                "SequenceNumber": "199735000000000028076666577",
+                "SizeBytes": 1506,
+                "StreamViewType": "NEW_AND_OLD_IMAGES"
             },
-            "process_id_version": {
-              "S": "process123"
-            },
-            "user_id": {
-              "S": "user123"
-            },
-            "instance_state": {
-              "S": "running"
-            },
-            "launch_time": {
-              "S": "2024-04-20T10:00:00Z"
-            },
-            "last_run": {
-              "S": "success"
-            },
-            "description": {
-              "S": "Sample description"
-            }
-          },
-          "SequenceNumber": "111",
-          "SizeBytes": 26,
-          "StreamViewType": "NEW_AND_OLD_IMAGES"
-        },
-        "eventSourceARN": "arn:aws:dynamodb:us-west-2:123456789012:table/YourDynamoDBTable/stream/2024-04-20T00:00:00.000"
-      }
+            "eventSourceARN": "arn:aws:dynamodb:ap-southeast-1:678601387840:table/robot/stream/2024-04-19T17:24:32.235"
+        }
     ]
-  }
-  
+}

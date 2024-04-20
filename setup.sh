@@ -129,6 +129,8 @@ main() {
     echo "====== Running Robot ======"
     python3 -m robot robot.json
 
+    python3 upload_run.py --output_xml_path="output.xml" --user_id=\""$USER_ID"\" --process_id_version=\""$PROCESS_ID.$PROCESS_VERSION.detail"\"
+
     echo "====== Turning off Robot ======"
     wait_for_sync
     sudo shutdown now

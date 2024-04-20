@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 6.1.1 (Python 3.11.0 on win32)" generated="20240420 13:48:02.713" rpa="false" schemaversion="4">
+<suite id="s1" name="Google-Classroom" source="D:\Thesis\Project\Librabry\robot-development\tasks\google-classroom.robot">
+<test id="s1-t1" name="Test Create Course" line="18">
+<kw name="Set Up Classroom Connection" library="EduRPA.Google.Classroom">
+<arg>./devdata/token-classroom.json</arg>
+<status status="PASS" starttime="20240420 13:48:02.979" endtime="20240420 13:48:02.979"/>
+</kw>
+<kw name="Create Course" library="EduRPA.Google.Classroom">
+<var>${course_id}</var>
+<arg>${COURSE_NAME}</arg>
+<arg>${USER}</arg>
+<msg timestamp="20240420 13:48:02.982" level="INFO">file_cache is only supported with oauth2client&lt;4.0.0</msg>
+<msg timestamp="20240420 13:48:03.357" level="INFO">Refreshing credentials due to a 401 response. Attempt 1/2.</msg>
+<status status="FAIL" starttime="20240420 13:48:02.979" endtime="20240420 13:48:07.637"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>Course ID: ${course_id}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20240420 13:48:07.638" endtime="20240420 13:48:07.638"/>
+</kw>
+<status status="FAIL" starttime="20240420 13:48:02.978" endtime="20240420 13:48:07.638">Execution terminated by signal</status>
+</test>
+<test id="s1-t2" name="Create Assignment In Classroom" line="33">
+<tag>robot:exit</tag>
+<status status="FAIL" starttime="20240420 13:48:07.640" endtime="20240420 13:48:07.640">Test execution stopped due to a fatal error.</status>
+</test>
+<test id="s1-t3" name="Create Quiz In Classroom" line="48">
+<tag>robot:exit</tag>
+<status status="FAIL" starttime="20240420 13:48:07.641" endtime="20240420 13:48:07.642">Test execution stopped due to a fatal error.</status>
+</test>
+<status status="FAIL" starttime="20240420 13:48:02.714" endtime="20240420 13:48:07.644"/>
+</suite>
+<statistics>
+<total>
+<stat pass="0" fail="3" skip="0">All Tests</stat>
+</total>
+<tag>
+<stat pass="0" fail="1" skip="0" info="combined" combined="NOT robot:exit">NOT robot:exit</stat>
+</tag>
+<suite>
+<stat pass="0" fail="3" skip="0" id="s1" name="Google-Classroom">Google-Classroom</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>
