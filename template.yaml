@@ -362,8 +362,8 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       PackageType: Zip
-      Handler: app.trigger_write_robot_state
-      Runtime: python3.9
+      Handler: index.triggerWriteRobotStateHandler
+      Runtime: nodejs18.x
       CodeUri: src/trigger
       Events:
         DynamoDBStream:
