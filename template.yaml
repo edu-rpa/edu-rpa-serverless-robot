@@ -371,6 +371,13 @@ Resources:
           Properties:
             Stream: !GetAtt RobotTable.StreamArn
             StartingPosition: TRIM_HORIZON # Adjust as needed
+      # Events:
+      #   HttpPost:
+      #     Type: HttpApi
+      #     Properties:
+      #       Path: /robot/trigger
+      #       Method: POST
+      #       ApiId: !Ref RobotHttpApi
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref RobotTable

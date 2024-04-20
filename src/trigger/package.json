@@ -4,11 +4,13 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node temp.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/util-dynamodb": "^3.556.0",
+    "aws-sdk": "^2.1603.0",
     "mysql2": "^3.9.6"
   },
   "devDependencies": {

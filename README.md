@@ -161,3 +161,6 @@ aws s3 cp setup.sh s3://edu-rpa-robot/utils/setup.sh
 sam local start-api -t template.yaml --skip-pull-image
 ```
 
+
+sam local invoke --skip-pull-image --debug TriggerWriteRobotStateFunction --event events/dynamodb-stream.json          
+

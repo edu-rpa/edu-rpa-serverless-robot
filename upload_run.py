@@ -81,21 +81,31 @@ class MyResultVisitor(ResultVisitor):
 def parse(output_xml_path, user_id, process_id_version, table_name="robot"): 
     result = ExecutionResult(output_xml_path)
     stats = result.statistics
+    # Passed/Failed
     stat_result = {
         'failed': stats.total.failed,
         'passed': stats.total.passed
     }
 
+    # Errors
     errors = result.errors
     visitor = MyResultVisitor()
     errors_result = {
         "error": True if errors else False,
         "message": str(errors)
     }
-
-    result.visit(visitor)
-
+    
+    # Duration
+    starttime = result.suite.start_time
+    endtime = result.suite.end_time
+    elapsed_time = result.suite.elapsed_time
+    time_result = {
+        "starttime": starttime.strftime("%Y-%m-%d %H:%M:%S"),
+        "endtime": endtime.strftime("%Y-%m-%d %H:%M:%S"),
+        "elapsed_time": str(elapsed_time)
+    }
     # Get the serialize object
+    result.visit(visitor)
     kw_run = visitor.kw_run
 
     dynamodb = boto3.resource('dynamodb')
@@ -110,7 +120,8 @@ def parse(output_xml_path, user_id, process_id_version, table_name="robot"):
             "stats": stat_result,
             "errors": errors_result,
             "run": kw_run
-        }
+        },
+        "time_result": time_result
     })
     
 def parse_args():
