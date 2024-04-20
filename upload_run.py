@@ -1,8 +1,8 @@
 import argparse
+import os
 from robot.api import ExecutionResult, ResultVisitor
-from robot.model import For, TestCase
+from robot.model import TestCase
 import boto3
-
 
 class MyResultVisitor(ResultVisitor):
     def __init__(self):
@@ -105,6 +105,7 @@ def parse(output_xml_path, user_id, process_id_version, table_name="robot"):
     table.put_item(Item = {
         "userId" : user_id,
         "processIdVersion": process_id_version,
+        "uuid": os.environ["UUID_STREAM"],
         "robotDetail": {
             "stats": stat_result,
             "errors": errors_result,

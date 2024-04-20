@@ -3,7 +3,8 @@ import os
 import textwrap
 
 def cloudwatch_agent_start(cloudwatch_config, table_name,userId,processVersionId):
-    return textwrap.dedent(f"""cat > /opt/aws/amazon-cloudwatch-agent/bin/config.json << EOF
+    return textwrap.dedent(f"""export UUID_STREAM=$(uuidgen -r)
+cat > /opt/aws/amazon-cloudwatch-agent/bin/config.json << EOF
 {json.dumps(cloudwatch_config, indent=4)}
 EOF
 sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/bin/config.json
