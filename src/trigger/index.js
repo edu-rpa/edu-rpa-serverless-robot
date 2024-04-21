@@ -10,6 +10,7 @@ const mysqlConfig = {
 };
 
 exports.triggerWriteRobotStateHandler = async (event, context) => {
+    console.log(event)
     const connection = mysql.createConnection(mysqlConfig);
 
     // event = JSON.parse(event.body) // For testing as API

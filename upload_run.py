@@ -77,8 +77,11 @@ class MyResultVisitor(ResultVisitor):
             "messages": str(kw.messages[0] if len(kw.messages) else "")
         })
 
-
 def parse(output_xml_path, user_id, process_id_version, table_name="robot"): 
+    Item = parse_robot_result(output_xml_path, user_id, process_id_version)
+    update_robot_run(Item)
+
+def parse_robot_result(output_xml_path, user_id, process_id_version): 
     result = ExecutionResult(output_xml_path)
     stats = result.statistics
     # Passed/Failed
@@ -108,11 +111,7 @@ def parse(output_xml_path, user_id, process_id_version, table_name="robot"):
     result.visit(visitor)
     kw_run = visitor.kw_run
 
-    dynamodb = boto3.resource('dynamodb')
-    table_name = 'robot'
-    table = dynamodb.Table(table_name)
-
-    table.put_item(Item = {
+    return {
         "userId" : user_id,
         "processIdVersion": process_id_version,
         "uuid": os.environ["UUID_STREAM"],
@@ -122,7 +121,17 @@ def parse(output_xml_path, user_id, process_id_version, table_name="robot"):
             "run": kw_run
         },
         "time_result": time_result
-    })
+    }
+    
+def update_robot_run(Item, table_name="robot") :
+    dynamodb = boto3.resource('dynamodb')
+    table_name = 'robot'
+    table = dynamodb.Table(table_name)
+    try:
+        table.put_item(Item = Item)
+    except Exception as err:
+        raise err
+
     
 def parse_args():
     parser = argparse.ArgumentParser(description="Parse and add robot detail")
