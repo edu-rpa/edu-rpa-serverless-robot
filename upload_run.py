@@ -110,7 +110,6 @@ def parse_robot_result(output_xml_path, user_id, process_id_version):
     # Get the serialize object
     result.visit(visitor)
     kw_run = visitor.kw_run
-
     return {
         "userId" : user_id,
         "processIdVersion": process_id_version,
@@ -127,6 +126,7 @@ def update_robot_run(Item, table_name="robot") :
     dynamodb = boto3.resource('dynamodb')
     table_name = 'robot'
     table = dynamodb.Table(table_name)
+    print(Item)
     try:
         table.put_item(Item = Item)
     except Exception as err:

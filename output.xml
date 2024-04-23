@@ -1,45 +1,192 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<robot generator="Robot 6.1.1 (Python 3.11.0 on win32)" generated="20240420 13:48:02.713" rpa="false" schemaversion="4">
-<suite id="s1" name="Google-Classroom" source="D:\Thesis\Project\Librabry\robot-development\tasks\google-classroom.robot">
-<test id="s1-t1" name="Test Create Course" line="18">
-<kw name="Set Up Classroom Connection" library="EduRPA.Google.Classroom">
-<arg>./devdata/token-classroom.json</arg>
-<status status="PASS" starttime="20240420 13:48:02.979" endtime="20240420 13:48:02.979"/>
+<robot generator="Robot 6.1.1 (Python 3.11.0 on win32)" generated="20240421 20:49:42.945" rpa="false" schemaversion="4">
+<suite id="s1" name="Task" source="D:\Thesis\Project\Librabry\robot-development\tasks\task.robot">
+<test id="s1-t1" name="Main" line="9">
+<for flavor="IN">
+<var>${person}</var>
+<value>@{PERSONS}</value>
+<iter>
+<var name="${person}">{'name': 'Alice', 'age': 25}</var>
+<kw name="Log To Console" library="BuiltIn">
+<arg>${person["name"]} is ${person["age"]} years old</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" starttime="20240421 20:49:42.971" endtime="20240421 20:49:42.971"/>
 </kw>
-<kw name="Create Course" library="EduRPA.Google.Classroom">
-<var>${course_id}</var>
-<arg>${COURSE_NAME}</arg>
-<arg>${USER}</arg>
-<msg timestamp="20240420 13:48:02.982" level="INFO">file_cache is only supported with oauth2client&lt;4.0.0</msg>
-<msg timestamp="20240420 13:48:03.357" level="INFO">Refreshing credentials due to a 401 response. Attempt 1/2.</msg>
-<status status="FAIL" starttime="20240420 13:48:02.979" endtime="20240420 13:48:07.637"/>
-</kw>
+<for flavor="IN">
+<var>${element}</var>
+<value>@{PERSONS}</value>
+<iter>
+<var name="${element}">{'name': 'Alice', 'age': 25}</var>
 <kw name="Log" library="BuiltIn">
-<arg>Course ID: ${course_id}</arg>
+<arg>${element}</arg>
 <doc>Logs the given message with the given level.</doc>
-<status status="NOT RUN" starttime="20240420 13:48:07.638" endtime="20240420 13:48:07.638"/>
+<msg timestamp="20240421 20:49:42.971" level="INFO">{'name': 'Alice', 'age': 25}</msg>
+<status status="PASS" starttime="20240421 20:49:42.971" endtime="20240421 20:49:42.977"/>
 </kw>
-<status status="FAIL" starttime="20240420 13:48:02.978" endtime="20240420 13:48:07.638">Execution terminated by signal</status>
+<status status="PASS" starttime="20240421 20:49:42.971" endtime="20240421 20:49:42.977"/>
+</iter>
+<iter>
+<var name="${element}">{'name': 'Bob', 'age': 30}</var>
+<kw name="Log" library="BuiltIn">
+<arg>${element}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20240421 20:49:42.977" level="INFO">{'name': 'Bob', 'age': 30}</msg>
+<status status="PASS" starttime="20240421 20:49:42.977" endtime="20240421 20:49:42.977"/>
+</kw>
+<status status="PASS" starttime="20240421 20:49:42.977" endtime="20240421 20:49:42.977"/>
+</iter>
+<iter>
+<var name="${element}">{'name': 'Charlie', 'age': 35}</var>
+<kw name="Log" library="BuiltIn">
+<arg>${element}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20240421 20:49:42.977" level="INFO">{'name': 'Charlie', 'age': 35}</msg>
+<status status="PASS" starttime="20240421 20:49:42.977" endtime="20240421 20:49:42.977"/>
+</kw>
+<status status="PASS" starttime="20240421 20:49:42.977" endtime="20240421 20:49:42.977"/>
+</iter>
+<status status="PASS" starttime="20240421 20:49:42.971" endtime="20240421 20:49:42.977"/>
+</for>
+<status status="PASS" starttime="20240421 20:49:42.971" endtime="20240421 20:49:42.977"/>
+</iter>
+<iter>
+<var name="${person}">{'name': 'Bob', 'age': 30}</var>
+<kw name="Log To Console" library="BuiltIn">
+<arg>${person["name"]} is ${person["age"]} years old</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" starttime="20240421 20:49:42.977" endtime="20240421 20:49:42.977"/>
+</kw>
+<for flavor="IN">
+<var>${element}</var>
+<value>@{PERSONS}</value>
+<iter>
+<var name="${element}">{'name': 'Alice', 'age': 25}</var>
+<kw name="Log" library="BuiltIn">
+<arg>${element}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20240421 20:49:42.977" level="INFO">{'name': 'Alice', 'age': 25}</msg>
+<status status="PASS" starttime="20240421 20:49:42.977" endtime="20240421 20:49:42.977"/>
+</kw>
+<status status="PASS" starttime="20240421 20:49:42.977" endtime="20240421 20:49:42.977"/>
+</iter>
+<iter>
+<var name="${element}">{'name': 'Bob', 'age': 30}</var>
+<kw name="Log" library="BuiltIn">
+<arg>${element}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20240421 20:49:42.977" level="INFO">{'name': 'Bob', 'age': 30}</msg>
+<status status="PASS" starttime="20240421 20:49:42.977" endtime="20240421 20:49:42.977"/>
+</kw>
+<status status="PASS" starttime="20240421 20:49:42.977" endtime="20240421 20:49:42.977"/>
+</iter>
+<iter>
+<var name="${element}">{'name': 'Charlie', 'age': 35}</var>
+<kw name="Log" library="BuiltIn">
+<arg>${element}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20240421 20:49:42.977" level="INFO">{'name': 'Charlie', 'age': 35}</msg>
+<status status="PASS" starttime="20240421 20:49:42.977" endtime="20240421 20:49:42.977"/>
+</kw>
+<status status="PASS" starttime="20240421 20:49:42.977" endtime="20240421 20:49:42.977"/>
+</iter>
+<status status="PASS" starttime="20240421 20:49:42.977" endtime="20240421 20:49:42.977"/>
+</for>
+<status status="PASS" starttime="20240421 20:49:42.977" endtime="20240421 20:49:42.977"/>
+</iter>
+<iter>
+<var name="${person}">{'name': 'Charlie', 'age': 35}</var>
+<kw name="Log To Console" library="BuiltIn">
+<arg>${person["name"]} is ${person["age"]} years old</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" starttime="20240421 20:49:42.977" endtime="20240421 20:49:42.977"/>
+</kw>
+<for flavor="IN">
+<var>${element}</var>
+<value>@{PERSONS}</value>
+<iter>
+<var name="${element}">{'name': 'Alice', 'age': 25}</var>
+<kw name="Log" library="BuiltIn">
+<arg>${element}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20240421 20:49:42.977" level="INFO">{'name': 'Alice', 'age': 25}</msg>
+<status status="PASS" starttime="20240421 20:49:42.977" endtime="20240421 20:49:42.977"/>
+</kw>
+<status status="PASS" starttime="20240421 20:49:42.977" endtime="20240421 20:49:42.977"/>
+</iter>
+<iter>
+<var name="${element}">{'name': 'Bob', 'age': 30}</var>
+<kw name="Log" library="BuiltIn">
+<arg>${element}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20240421 20:49:42.977" level="INFO">{'name': 'Bob', 'age': 30}</msg>
+<status status="PASS" starttime="20240421 20:49:42.977" endtime="20240421 20:49:42.977"/>
+</kw>
+<status status="PASS" starttime="20240421 20:49:42.977" endtime="20240421 20:49:42.977"/>
+</iter>
+<iter>
+<var name="${element}">{'name': 'Charlie', 'age': 35}</var>
+<kw name="Log" library="BuiltIn">
+<arg>${element}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20240421 20:49:42.977" level="INFO">{'name': 'Charlie', 'age': 35}</msg>
+<status status="PASS" starttime="20240421 20:49:42.977" endtime="20240421 20:49:42.977"/>
+</kw>
+<status status="PASS" starttime="20240421 20:49:42.977" endtime="20240421 20:49:42.977"/>
+</iter>
+<status status="PASS" starttime="20240421 20:49:42.977" endtime="20240421 20:49:42.977"/>
+</for>
+<status status="PASS" starttime="20240421 20:49:42.977" endtime="20240421 20:49:42.977"/>
+</iter>
+<status status="PASS" starttime="20240421 20:49:42.971" endtime="20240421 20:49:42.977"/>
+</for>
+<kw name="Set Variable" library="BuiltIn">
+<var>${a}</var>
+<arg>1</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20240421 20:49:42.977" level="INFO">${a} = 1</msg>
+<status status="PASS" starttime="20240421 20:49:42.977" endtime="20240421 20:49:42.977"/>
+</kw>
+<if>
+<branch type="IF" condition="${a} == 1">
+<kw name="Log To Console" library="BuiltIn">
+<arg>${True}</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" starttime="20240421 20:49:42.977" endtime="20240421 20:49:42.977"/>
+</kw>
+<status status="PASS" starttime="20240421 20:49:42.977" endtime="20240421 20:49:42.977"/>
+</branch>
+<branch type="ELSE IF" condition="${a} == 2">
+<kw name="Log To Console" library="BuiltIn">
+<arg>${False}</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="NOT RUN" starttime="20240421 20:49:42.977" endtime="20240421 20:49:42.977"/>
+</kw>
+<status status="NOT RUN" starttime="20240421 20:49:42.977" endtime="20240421 20:49:42.977"/>
+</branch>
+<status status="PASS" starttime="20240421 20:49:42.977" endtime="20240421 20:49:42.977"/>
+</if>
+<kw name="Log To Console" library="BuiltIn">
+<arg>${PERSONS_NESTED_OBJECT["data"]}</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" starttime="20240421 20:49:42.977" endtime="20240421 20:49:42.983"/>
+</kw>
+<kw name="Log To Console" library="BuiltIn">
+<arg>${PERSONS_NESTED_OBJECT["data"]}</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" starttime="20240421 20:49:42.983" endtime="20240421 20:49:42.984"/>
+</kw>
+<status status="PASS" starttime="20240421 20:49:42.971" endtime="20240421 20:49:42.984"/>
 </test>
-<test id="s1-t2" name="Create Assignment In Classroom" line="33">
-<tag>robot:exit</tag>
-<status status="FAIL" starttime="20240420 13:48:07.640" endtime="20240420 13:48:07.640">Test execution stopped due to a fatal error.</status>
-</test>
-<test id="s1-t3" name="Create Quiz In Classroom" line="48">
-<tag>robot:exit</tag>
-<status status="FAIL" starttime="20240420 13:48:07.641" endtime="20240420 13:48:07.642">Test execution stopped due to a fatal error.</status>
-</test>
-<status status="FAIL" starttime="20240420 13:48:02.714" endtime="20240420 13:48:07.644"/>
+<status status="PASS" starttime="20240421 20:49:42.945" endtime="20240421 20:49:42.984"/>
 </suite>
 <statistics>
 <total>
-<stat pass="0" fail="3" skip="0">All Tests</stat>
+<stat pass="1" fail="0" skip="0">All Tests</stat>
 </total>
 <tag>
-<stat pass="0" fail="1" skip="0" info="combined" combined="NOT robot:exit">NOT robot:exit</stat>
 </tag>
 <suite>
-<stat pass="0" fail="3" skip="0" id="s1" name="Google-Classroom">Google-Classroom</stat>
+<stat pass="1" fail="0" skip="0" id="s1" name="Task">Task</stat>
 </suite>
 </statistics>
 <errors>

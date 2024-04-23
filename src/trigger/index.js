@@ -10,10 +10,10 @@ const mysqlConfig = {
 };
 
 exports.triggerWriteRobotStateHandler = async (event, context) => {
-    console.log(event)
+    console.log(JSON.stringify(event))
     const connection = mysql.createConnection(mysqlConfig);
 
-    // event = JSON.parse(event.body) // For testing as API
+    event = JSON.parse(event.body) // For testing as API
     
     try {
         // Connect to MySQL
@@ -23,7 +23,12 @@ exports.triggerWriteRobotStateHandler = async (event, context) => {
         // Process each record from the DynamoDB event
         for (let record of event.Records) {
             // Parse record data
+            if(record.eventName == "REMOVE")
+                continue;
             const dynamoData = record.dynamodb.NewImage;
+            if(!dynamoData) {
+                continue;
+            } 
             const processIdVersion = dynamoData.processIdVersion.S;
             const action = getAction(processIdVersion)
             console.log("==ACTION==", action)
@@ -101,7 +106,7 @@ async function handleUploadRobotRunDetail(connection, dynamoData) {
     const robotDetail = dynamoData.robotDetail.M
     const stats = unmarshall(robotDetail.stats.M)
     const errors = unmarshall(robotDetail.errors.M)
-    const times = unmarshall(robotDetail.time_result.M)
+    const times = unmarshall(dynamoData.time_result.M)
     const kwRun = Object.values(unmarshall(robotDetail.run.L)) // It turn list to object with index is key so we must convert back
 
     const streamUuid = dynamoData.uuid.S
@@ -135,7 +140,7 @@ async function handleUploadRobotRunDetail(connection, dynamoData) {
         i.kw_name.toString(),
         i.kw_args.toString(),
         i.kw_status.toString(),
-        i.messages.toString(),
+        i.messages?.toString() ?? "",
         parseKeywordDateTime(i.start_time.toString()),
         parseKeywordDateTime(i.end_time.toString())
     ])
