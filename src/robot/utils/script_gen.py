@@ -28,7 +28,7 @@ echo 'cd /home/ec2-user/robot \\
 && dos2unix ./setup.sh \\
 && export ROBOT_FILE={robot_uri}/robot-code.json \\
 && sudo chmod -R 777 /home/ec2-user/robot \\
-&& bash setup.sh >> /var/log/robot.log \\
+&& source setup.sh >> /var/log/robot.log \\
 && sudo aws s3 cp /var/log/robot.log s3://{robot_bucket}/{robot_uri}/run/ \\
 && sudo aws s3 cp ./report.html s3://{robot_bucket}/{robot_uri}/run/ \\
 && sudo aws s3 cp ./log.html s3://{robot_bucket}/{robot_uri}/run/ \\

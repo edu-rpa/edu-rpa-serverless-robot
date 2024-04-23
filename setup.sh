@@ -127,9 +127,10 @@ main() {
     get-credential
 
     echo "====== Running Robot ======"
-    python3 -m robot robot.json
+    python3 -m robot robot.json >> /var/log/robot.log 2>&1
 
-    python3 upload_run.py --output_xml_path="output.xml" --user_id=\""$USER_ID"\" --process_id_version=\""$PROCESS_ID.$PROCESS_VERSION.detail"\"
+    echo "====== Update Robot Run Result ======"
+    python3 upload_run.py --output_xml_path="./output.xml" --user_id=\""$USER_ID"\" --process_id_version=\""$PROCESS_ID.$PROCESS_VERSION.detail"\" >> /var/log/robot.log 2>&1
 
     echo "====== Turning off Robot ======"
     wait_for_sync
