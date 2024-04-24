@@ -123,7 +123,7 @@ def parse_robot_result(output_xml_path, user_id, process_id_version):
     }
     
 def update_robot_run(Item, table_name="robot") :
-    dynamodb = boto3.resource('dynamodb')
+    dynamodb = boto3.resource('dynamodb', region_name='ap-southeast-1')
     table_name = 'robot'
     table = dynamodb.Table(table_name)
     print(Item)

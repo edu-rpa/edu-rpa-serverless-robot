@@ -365,19 +365,19 @@ Resources:
       Handler: index.triggerWriteRobotStateHandler
       Runtime: nodejs18.x
       CodeUri: src/trigger
-      # Events:
-      #   DynamoDBStream:
-      #     Type: DynamoDB
-      #     Properties:
-      #       Stream: !GetAtt RobotTable.StreamArn
-      #       StartingPosition: LATEST # Adjust as needed
       Events:
-        HttpPost:
-          Type: HttpApi
+        DynamoDBStream:
+          Type: DynamoDB
           Properties:
-            Path: /robot/trigger
-            Method: POST
-            ApiId: !Ref RobotHttpApi
+            Stream: !GetAtt RobotTable.StreamArn
+            StartingPosition: LATEST # Adjust as needed
+      # Events:
+      #   HttpPost:
+      #     Type: HttpApi
+      #     Properties:
+      #       Path: /robot/trigger
+      #       Method: POST
+      #       ApiId: !Ref RobotHttpApi
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref RobotTable

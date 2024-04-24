@@ -64,6 +64,7 @@ download_json_from_s3() {
     local object_name=$2
     
     echo "====== Downloading robot code ======"
+    echo $bucket_name   $object_name
     aws s3 cp s3://$bucket_name/$object_name ./robot.json
 }
 
@@ -113,11 +114,6 @@ wait_for_sync() {
 main() {
     download_json_from_s3 "$bucket_name" "$object_name"
     robot_code=$(<robot.json)
-    create_robot_json_file() {
-        echo "$robot_code" > ./robot.json
-    }
-
-    create_robot_json_file
 
     echo "====== Installing Dependencies ======"
     install_dependencies_from_robot_file "$robot_code"

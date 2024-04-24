@@ -16,7 +16,7 @@ wget https://s3.ap-southeast-1.amazonaws.com/amazoncloudwatch-agent-ap-southeast
 rpm -U ./amazon-cloudwatch-agent.rpm''')
 
 def instance_init(robot_bucket, robot_uri, cloudwatch_agent_start):
-    return textwrap.dedent(f'''
+    return textwrap.dedent(f'''#!/bin/bash
 echo 'cd /home/ec2-user/robot \\
 && source /etc/profile.d/conda.sh \\
 && {cloudwatch_agent_start} \\
@@ -28,7 +28,7 @@ echo 'cd /home/ec2-user/robot \\
 && dos2unix ./setup.sh \\
 && export ROBOT_FILE={robot_uri}/robot-code.json \\
 && sudo chmod -R 777 /home/ec2-user/robot \\
-&& source setup.sh >> /var/log/robot.log \\
+&& bash setup.sh >> /var/log/robot.log \\
 && sudo aws s3 cp /var/log/robot.log s3://{robot_bucket}/{robot_uri}/run/ \\
 && sudo aws s3 cp ./report.html s3://{robot_bucket}/{robot_uri}/run/ \\
 && sudo aws s3 cp ./log.html s3://{robot_bucket}/{robot_uri}/run/ \\
