@@ -3,9 +3,10 @@
   "routeKey": "$default",
   "rawPath": "/robot/run",
   "body": {
-    "user_id": 9,
-    "process_id": "Process_7gguIJX",
-    "version": 5
-  },
+    "user_id": "9",
+    "process_id": "Process_O0ulPEI",
+    "version": 18,
+    "trigger_type": "manual"
+},
   "isBase64Encoded": true
 }
