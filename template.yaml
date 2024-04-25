@@ -45,6 +45,28 @@ Resources:
       StreamSpecification:
         StreamViewType: NEW_AND_OLD_IMAGES
 
+  RobotDetailRunTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      KeySchema:
+        -
+          AttributeName: userId
+          KeyType: HASH
+        -
+          AttributeName: processIdVersion
+          KeyType: RANGE
+      AttributeDefinitions:
+        -
+          AttributeName: userId
+          AttributeType: S
+        -
+          AttributeName: processIdVersion
+          AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      TableName: robot-run
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+
   RobotBucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -381,6 +403,30 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref RobotTable
+
+  TriggerWriteRobotRunDetailFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Zip
+      Handler: index.triggerWriteRobotDetailHandler
+      Runtime: nodejs18.x
+      CodeUri: src/trigger
+      Events:
+        DynamoDBStream:
+          Type: DynamoDB
+          Properties:
+            Stream: !GetAtt RobotDetailRunTable.StreamArn
+            StartingPosition: LATEST # Adjust as needed
+      # Events:
+      #   HttpPost:
+      #     Type: HttpApi
+      #     Properties:
+      #       Path: /robot/trigger
+      #       Method: POST
+      #       ApiId: !Ref RobotHttpApi
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref RobotDetailRunTable
   
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function

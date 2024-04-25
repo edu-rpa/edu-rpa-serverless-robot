@@ -29,19 +29,49 @@ exports.triggerWriteRobotStateHandler = async (event, context) => {
             if(!dynamoData) {
                 continue;
             } 
-            const processIdVersion = dynamoData.processIdVersion.S;
-            const action = getAction(processIdVersion)
-            console.log("==ACTION==", action)
-            switch (action) {
-                case "STATUS":
-                    handleUploadRobotStatus(connection, dynamoData);
-                    break;
-                case "DETAIL":
-                    await handleUploadRobotRunDetail(connection, dynamoData);
-                    break;
-                default:
-                    break;
+            handleUploadRobotStatus(connection, dynamoData);
+        };
+    } catch (error) {
+        console.error("Error while connecting to MySQL:", error);
+        throw error;
+
+    } finally {
+        // Close MySQL connection
+        if (connection && connection.state !== 'disconnected') {
+            connection.end();
+            console.log("MySQL connection is closed");
+        }
+    }
+
+    return {
+        statusCode: 200,
+        body: JSON.stringify('Data processed successfully')
+    };
+};
+
+
+exports.triggerWriteRobotDetailHandler = async (event, context) => {
+    console.log(JSON.stringify(event))
+    const connection = mysql.createConnection(mysqlConfig);
+
+    // event = JSON.parse(event.body) // For testing as API
+    
+    try {
+        // Connect to MySQL
+        connection.connect();
+        console.log("Connected to MySQL");
+
+        // Process each record from the DynamoDB event
+        for (let record of event.Records) {
+            // Parse record data
+            if(record.eventName == "REMOVE")
+                continue;
+            const dynamoData = record.dynamodb.NewImage;
+            if(!dynamoData) {
+                continue;
             }
+            await handleUploadRobotRunDetail(connection, dynamoData);
+
         };
     } catch (error) {
         console.error("Error while connecting to MySQL:", error);
