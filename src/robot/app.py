@@ -70,6 +70,7 @@ def get_robot_detail(event, context):
 
     try:
         robot_response = robot_table.get_item(Key = {"userId": user_id, "processIdVersion": f'{process_id}.{version}'})
+        print(f'Robot Response of robot {user_id}.{process_id}.{version}: {robot_response}')
         if "Item" in robot_response:
             return success_response(robot_response["Item"])
         else:
