@@ -21,6 +21,7 @@ Globals:
           REPORT_AGENT_SQL: report_agent
           REPORT_AGENT_PWD: rA93{1L8=9D!
           REPORT_SCHEMA: report
+          NOTIFY_STATE: running,setup,executing,cooldown,stopped
 
 Resources:
   RobotTable:

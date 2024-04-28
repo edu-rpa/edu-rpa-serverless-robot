@@ -125,7 +125,7 @@ def parse_robot_result(output_xml_path, user_id, process_id_version):
 def update_robot_run(Item, table_name="robot-run") :
     dynamodb = boto3.resource('dynamodb', region_name='ap-southeast-1')
     table = dynamodb.Table(table_name)
-    print(Item)
+    # print(Item)
     try:
         table.put_item(Item = Item)
     except Exception as err:

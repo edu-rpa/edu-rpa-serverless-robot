@@ -29,7 +29,7 @@ exports.triggerWriteRobotStateHandler = async (event, context) => {
             if(!dynamoData) {
                 continue;
             } 
-            handleUploadRobotStatus(connection, dynamoData);
+            await handleUploadRobotStatus(connection, dynamoData);
         };
     } catch (error) {
         console.error("Error while connecting to MySQL:", error);
@@ -111,21 +111,67 @@ function getAction(processIdVersion) {
     }
 }
 
-function handleUploadRobotStatus(connection, dynamoData) {
+async function handleUploadRobotStatus(connection, dynamoData) {
     const instanceId = dynamoData.instanceId.S;
     const processIdVersion = dynamoData.processIdVersion.S;
     const userId = dynamoData.userId.S;
     const instanceState = dynamoData.instanceState.S;
     const launchTime = dynamoData.launchTime.S;
-    const lastRun = dynamoData.lastRun?.S || null;
-    const description = dynamoData.description?.S || null;
+
+    // Set the UTC offset for GMT+7 (Indochina Time) in milliseconds (7 hours ahead of UTC)
+    const utcOffsetMs = 7 * 60 * 60 * 1000;
+    const currentTimeInGMTPlus7 = new Date(Date.now() + utcOffsetMs);
+    const formattedTime = currentTimeInGMTPlus7.toISOString(); // Example ISO format
+
+    // Notify user if robot run successfully
+    let acceptedStatus = process.env["NOTIFY_STATE"]?.split(",") ?? [];
+    if(acceptedStatus.includes(instanceState)) {
+        console.log("Notify user", userId, "Robot State", instanceState)
+        await sendNotification(
+            userId,
+            `Robot ${processIdVersion}: ${instanceState}`,
+            `${formattedTime}: Robot ${processIdVersion} change state to ${instanceState}`,
+        )
+    }
 
     // Write to robot_run_log table
     const insertLogQuery = "INSERT INTO robot_run_log (instance_id, process_id_version, user_id, instance_state, launch_time) VALUES (?, ?, ?, ?, ?)";
     const logValues = [instanceId, processIdVersion, userId, instanceState, launchTime];
-    connection.query(insertLogQuery, logValues, (error, results, fields) => {
+    await connection.promise().query(insertLogQuery, logValues, (error, results, fields) => {
         if (error) throw error;
     });
+}
+
+async function sendNotification(userId, title, content) {
+    const url = process.env["MAIN_SERVER_API"]+'/notification';
+    const requestBody = {
+        userId: parseInt(userId),
+        title: title,
+        content: content,
+        type: 'ROBOT_EXECUTION'
+    };
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Service-Key': `${process.env["SERVICE_KEY"]}` // Include the API key in the Authorization header
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const responseData = await response.json();
+        console.log('Notification sent successfully:', responseData);
+        return responseData; // Optionally return data from the response
+    } catch (error) {
+        console.error('Error sending notification:', error);
+        // Handle error appropriately (e.g., show error message to user)
+    }
 }
 
 async function handleUploadRobotRunDetail(connection, dynamoData) {

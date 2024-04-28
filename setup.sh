@@ -111,7 +111,29 @@ wait_for_sync() {
     done
 }
 
+function update_instance_state() {
+    local table_name="robot"
+    local user_id="$USER_ID"
+    local process_id_version="$PROCESS_ID.$PROCESS_VERSION"
+    local new_instance_state="$1"
+
+    # Validate input parameters
+    if [ -z "$table_name" ] || [ -z "$user_id" ] || [ -z "$process_id_version" ] || [ -z "$new_instance_state" ]; then
+        echo "Usage: update_instance_state <table_name> <user_id> <process_id_version> <new_instance_state>"
+        return 1
+    fi
+
+    # Update instanceState attribute using AWS CLI
+    aws dynamodb update-item \
+        --table-name "$table_name" \
+        --key '{ "userId": { "S": "'"$user_id"'" }, "processIdVersion": { "S": "'"$process_id_version"'" } }' \
+        --update-expression "SET instanceState = :state" \
+        --expression-attribute-values '{ ":state": { "S": "'"$new_instance_state"'" } }' \
+        --return-values ALL_NEW
+}
+
 main() {
+    update_instance_state setup
     download_json_from_s3 "$bucket_name" "$object_name"
     robot_code=$(<robot.json)
 
@@ -121,9 +143,11 @@ main() {
     echo "====== Get Robot Credentials ======"
     get-credential
 
+    update_instance_state executing
     echo "====== Running Robot ======"
     python3 -m robot robot.json >> /var/log/robot.log 2>&1
 
+    update_instance_state cooldown
     echo "====== Update Robot Run Result ======"
     python3 upload_run.py --output_xml_path="./output.xml" --user_id="$USER_ID" --process_id_version="$PROCESS_ID.$PROCESS_VERSION.detail" >> /var/log/robot.log 2>&1
 
