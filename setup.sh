@@ -7,8 +7,9 @@ object_name="$ROBOT_FILE"
 declare -A dependency_map=(
     ["RPA.Cloud.Google"]="rpaframework-google"
     ["RPA.Cloud.AWS"]="rpaframework-aws"
-    ["EduRPA"]="EduRPA"
-    ["EduRPA.Google"]="edurpa-google"
+    ["EduRPA.Document"]="edurpa-document"
+    ["EduRPA.Google"]="edurpa-cloud"
+    ["EduRPA.Storage"]="edurpa-cloud"
     ["pytorch"]="pytorch torchvision cpuonly -c pytorch"
     ["PDF"]="rpaframework-pdf"
 )
@@ -46,7 +47,7 @@ install_dependencies_from_robot_file() {
         echo "${install_command[@]}"
         "${install_command[@]}"
 
-        if [[ $dependency == *"EduRPA"* ]]; then
+        if [[ $dependency == *"EduRPA.Document"* ]]; then
             install_command=("conda" "install" "-y -q" ${dependency_map["pytorch"]})
             echo "${install_command[@]}"
             "${install_command[@]}"
