@@ -11,6 +11,7 @@
   "dependencies": {
     "@aws-sdk/util-dynamodb": "^3.556.0",
     "aws-sdk": "^2.1603.0",
+    "axios": "^1.6.8",
     "mysql2": "^3.9.6"
   },
   "devDependencies": {
