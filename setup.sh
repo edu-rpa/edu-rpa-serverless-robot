@@ -117,6 +117,8 @@ function update_instance_state() {
     local process_id_version="$PROCESS_ID.$PROCESS_VERSION"
     local new_instance_state="$1"
 
+    echo "Robot State: " $new_instance_state
+
     # Validate input parameters
     if [ -z "$table_name" ] || [ -z "$user_id" ] || [ -z "$process_id_version" ] || [ -z "$new_instance_state" ]; then
         echo "Usage: update_instance_state <table_name> <user_id> <process_id_version> <new_instance_state>"
@@ -126,6 +128,7 @@ function update_instance_state() {
     # Update instanceState attribute using AWS CLI
     aws dynamodb update-item \
         --table-name "$table_name" \
+        --region ap-southeast-1 \
         --key '{ "userId": { "S": "'"$user_id"'" }, "processIdVersion": { "S": "'"$process_id_version"'" } }' \
         --update-expression "SET instanceState = :state" \
         --expression-attribute-values '{ ":state": { "S": "'"$new_instance_state"'" } }' \
