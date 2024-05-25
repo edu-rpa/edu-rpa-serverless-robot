@@ -8,7 +8,7 @@ from .resource_config import getCloudWatchConfig
 
 ec2_client = boto3.client('ec2')
 
-def launch_ec2(user_id, process_id, version, ami_id='ami-0d2e7d399f8a888b9'):
+def launch_ec2(user_id, process_id, version,  instance_type="t3.large", ami_id='ami-0d2e7d399f8a888b9'):
     robot_uri = f"{user_id}/{process_id}/{version}"
     robot_tag = f'edu-rpa-robot.{user_id}.{process_id}.{version}'
     robot_log_group = f'edu-rpa-robot-{user_id}-{process_id}'
@@ -58,7 +58,7 @@ source ./script.sh
     ###### Don't change any indent in these code !!! ######
     instance_params = {
         'ImageId':ami_id,
-        'InstanceType': 't3.small',
+        'InstanceType': instance_type,
         'MinCount': 1,
         'MaxCount': 1,
         'UserData': user_data,
