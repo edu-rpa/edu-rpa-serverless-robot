@@ -203,6 +203,34 @@ Resources:
               Id: UpdateRobotStateFunction
             RuleName: EC2-robot-instance-updates-state
 
+  TerminateRobotInstanceFunction:
+    Type: AWS::Serverless::Function
+    Connectors:
+      ConnectRobotTable:
+        Properties:
+          Destination:
+            Id: RobotTable
+          Permissions:
+            - Read
+    Properties:
+      PackageType: Zip
+      CodeUri: src/robot/
+      Handler: app.terminate_robot_instance
+      Runtime: python3.9
+      Policies:
+        - Statement:
+          - Effect: Allow
+            Action: 
+              - 'ec2:TerminateInstances'
+            Resource: '*'
+      Events:
+        HttpPut:
+          Type: HttpApi
+          Properties:
+            Path: /robot/terminate
+            Method: PUT
+            ApiId: !Ref RobotHttpApi
+
   CreateScheduleFunction:
     Type: AWS::Serverless::Function
     Properties:

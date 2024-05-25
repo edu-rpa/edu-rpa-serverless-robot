@@ -70,6 +70,7 @@ def get_robot_detail(event, context):
 
     try:
         robot_response = robot_table.get_item(Key = {"userId": user_id, "processIdVersion": f'{process_id}.{version}'})
+        print(f'Robot Response of robot {user_id}.{process_id}.{version}: {robot_response}')
         if "Item" in robot_response:
             return success_response(robot_response["Item"])
         else:
@@ -101,3 +102,24 @@ def update_robot_state(event, context):
             robot_table.delete_item(Key = {"userId": user_id, "processIdVersion": f'{process_id}.{version}'})
     except Exception as e:
         return error_response(400, "Cannot Update Robot Detail", str(e))
+    
+def terminate_robot_instance(event, context):
+    print(f'Event: {json_prettier(event)}')
+    robot_table = get_robot_table()
+
+    body  = json.loads(event['body'])
+    user_id = body['user_id']
+    process_id = body['process_id']
+    version = body['version']
+
+    robot_response = robot_table.get_item(Key = {"userId": user_id, "processIdVersion": f'{process_id}.{version}'})
+    if "Item" in robot_response:
+        instance_id = robot_response["Item"]["instanceId"]
+        try:
+            ec2 = boto3.client("ec2")
+            ec2.terminate_instances(InstanceIds=[instance_id])
+            return success_response({})
+        except Exception as e:
+            return error_response(400, "Cannot Terminate Robot Instance", str(e))
+    else:
+        return success_response({})
