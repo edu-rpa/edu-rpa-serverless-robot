@@ -47,8 +47,8 @@ install_dependencies_from_robot_file() {
         echo "${install_command[@]}"
         "${install_command[@]}"
 
-        if [[ $dependency == *"EduRPA.Document"* ]]; then
-            install_command=("conda" "install" "-y -q" ${dependency_map["pytorch"]})
+        if [[ $dependency == *"edurpa-document"* ]]; then
+            install_command=("conda" "install" "-y" ${dependency_map["pytorch"]})
             echo "${install_command[@]}"
             "${install_command[@]}"
         fi

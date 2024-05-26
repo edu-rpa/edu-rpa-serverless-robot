@@ -98,10 +98,13 @@ def parse_robot_result(output_xml_path, user_id, process_id_version):
         "message": str(errors)
     }
     
+    # Main
+    mainTest = result.suite.tests[0]
+    
     # Duration
-    starttime = result.suite.start_time
-    endtime = result.suite.end_time
-    elapsed_time = result.suite.elapsed_time
+    starttime = mainTest.start_time
+    endtime = mainTest.end_time
+    elapsed_time = mainTest.elapsed_time
     time_result = {
         "starttime": starttime.strftime("%Y-%m-%d %H:%M:%S"),
         "endtime": endtime.strftime("%Y-%m-%d %H:%M:%S"),
