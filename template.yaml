@@ -22,6 +22,8 @@ Globals:
           REPORT_AGENT_PWD: rA93{1L8=9D!
           REPORT_SCHEMA: report
           NOTIFY_STATE: running,setup,executing,cooldown,stopped
+          FILE_STORAGE_BASE_URL: https://hei2idvln1.execute-api.ap-southeast-2.amazonaws.com
+          FILE_STORAGE_SERVICE_KEY: 10d72583-3634-4dd4-b16c-4a87f6da6ffc
 
 Resources:
   RobotTable:

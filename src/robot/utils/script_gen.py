@@ -57,6 +57,7 @@ echo "export PROCESS_ID=\"{processId}\"" | sudo tee -a ~/.bash_profile
 echo "export PROCESS_VERSION=\"{processVersion}\"" | sudo tee -a ~/.bash_profile
 echo "export ROBOT_FOLDER=\"/home/ec2-user/robot\"" | sudo tee -a ~/.bash_profile
 echo "export ROBOT_CREDENTIAL_FOLDER=\"\$ROBOT_FOLDER/devdata\"" | sudo tee -a ~/.bash_profile
-
+echo "export FILE_STORAGE_BASE_URL=\"{os.environ.get('FILE_STORAGE_BASE_URL')}\"" | sudo tee -a ~/.bash_profile
+echo "export FILE_STORAGE_SERVICE_KEY=\"{os.environ.get('FILE_STORAGE_SERVICE_KEY')}\"" | sudo tee -a ~/.bash_profile
 source ~/.bash_profile
 ''')
