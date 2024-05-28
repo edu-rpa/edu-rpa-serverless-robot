@@ -36,6 +36,8 @@ install_dependencies_from_robot_file() {
     
     dependencies=($(echo "${dependencies[@]}" | tr ' ' '\n' | awk '!seen[$0]++' | tr '\n' ' '))
 
+    is_edurpa_document=false
+
     for dependency in "${dependencies[@]}"; do
         package_not_installed=($(check_package_installed "$dependency"))
         if [[ ${#package_not_installed[@]} -eq 0 ]]; then
@@ -48,6 +50,7 @@ install_dependencies_from_robot_file() {
         "${install_command[@]}"
 
         if [[ $dependency == *"edurpa-document"* ]]; then
+            is_edurpa_document=true
             install_command=("conda" "install" "-y" ${dependency_map["pytorch"]})
             echo "${install_command[@]}"
             "${install_command[@]}"
@@ -57,6 +60,12 @@ install_dependencies_from_robot_file() {
         echo "${install_command[@]}"
         "${install_command[@]}"
     done
+
+    if $is_edurpa_document; then
+        install_command=("pip" "install" "-q" "Pillow==9.5.0")
+        echo "Running: ${install_command[@]}"
+        "${install_command[@]}"
+    fi
 }
 
 # Download JSON file from S3
